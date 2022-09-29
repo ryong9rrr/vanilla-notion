@@ -13,12 +13,12 @@ export default class SideBar extends Component<State> {
     this.onAdd = onAdd
     this.onRemove = onRemove
 
-    attachToggleEventHandler.bind(null, this.$container)
     this.attachEventHandler('click', this.handleClickEvents)
   }
 
   private handleClickEvents(e: Event) {
     const $target = e.target as HTMLElement
+
     if ($target.id === 'sidebar-header') {
       this.handleClickSidebarHeader()
       return
@@ -41,6 +41,12 @@ export default class SideBar extends Component<State> {
 
     if (hasClassName($target, CLASS_NAME.removeButton)) {
       this.handleClickRemoveButton($target)
+      return
+    }
+
+    // 이렇게 하면 클릭이 잘 안되고 이벤트가 너무 많이 일어난다.
+    if ($target.getElementsByClassName('caret')) {
+      attachToggleEventHandler(this.$container)
       return
     }
   }

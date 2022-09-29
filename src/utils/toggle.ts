@@ -7,6 +7,7 @@ export const attachToggleEventHandler = ($container: HTMLElement) => {
     'caret'
   ) as HTMLCollectionOf<HTMLButtonElement>
   for (const $button of Array.from($toggleButtons)) {
+    // 되긴되는데 이벤트가 너무 많이 일어남
     $button.addEventListener('click', (e: Event) => spreadToggle(e.target as HTMLElement))
   }
 }
