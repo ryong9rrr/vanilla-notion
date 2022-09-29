@@ -1,11 +1,6 @@
 import Component from '~/core/component'
-import { State } from './types'
+import { Props, State } from './types'
 import { ID_NAME, template } from './template'
-
-interface Props {
-  parentId: string
-  onEditing?: (id: number, { title, content }: { title: string; content: string }) => void
-}
 
 const initialState = {}
 
