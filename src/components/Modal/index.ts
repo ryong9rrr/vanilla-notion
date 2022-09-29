@@ -12,6 +12,9 @@ export default class Modal extends Component<State> {
     super({ parentId, initialState, tag: 'div', template })
     this.onSubmit = onSubmit
     this.attachEventHandler('click', this.handleCloseModal)
+
+    const $parentElement = document.querySelector(this.parentId) as HTMLElement
+    $parentElement.appendChild(this.$container)
   }
 
   render() {
