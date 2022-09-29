@@ -1,1 +1,5 @@
-console.log('hello world')
+import App from './App'
+
+window.addEventListener('DOMContentLoaded', () => {
+  new App('#root')
+})
