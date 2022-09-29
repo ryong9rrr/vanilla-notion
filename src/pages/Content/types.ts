@@ -1,4 +1,5 @@
 export interface Props {
   parentId: string
-  onEditing?: (id: number, { title, content }: { title: string; content: string }) => void
+  onEditing?: any
+  // onEditing?: (id: number, { title, content }: { title: string; content: string }) => void
 }

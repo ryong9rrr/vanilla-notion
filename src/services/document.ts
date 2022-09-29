@@ -15,11 +15,11 @@ export default class DocumentApi extends Api {
     parentNodeId,
   }: {
     title: string
-    parentNodeId: number
+    parentNodeId?: number
   }): Promise<{ id: number; title: string; createdAt: string; updatedAt: string }> {
     return await this.request('/documents', {
       method: 'POST',
-      body: JSON.stringify({ title, parent: parentNodeId }),
+      body: JSON.stringify({ title, parent: parentNodeId || null }),
     })
   }
 

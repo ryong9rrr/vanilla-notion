@@ -8,7 +8,7 @@ import { push, redirect } from './core/router'
 import ContentPage from './pages/Content'
 import NotFoundPage from './pages/NotFound'
 import SideBar from './components/Sidebar'
-import debounce from './utils/debounce'
+import debounce from './utils/debounce' // 이거 디바운스 어떻게 잘사용할 수 있을까
 
 interface State {
   path: string
@@ -19,6 +19,8 @@ interface Props {
   rootId: string
   initialState: State
 }
+
+let debounceTimer = null as any
 
 export default class App {
   $root: HTMLElement
@@ -43,7 +45,7 @@ export default class App {
 
     this.modalComponent = new Modal({
       parentId: '#notion-modal-container',
-      onSubmit: async (parentNodeId: number, title: string) => {
+      onSubmit: async ({ title, parentNodeId }) => {
         const newDocument = await this.documentApi.postNewDocument({ title, parentNodeId })
         this.sidebarComponent.setState({
           documents: await this.documentApi.getAllDocument(),
@@ -92,7 +94,7 @@ export default class App {
     this.contentPage = new ContentPage({
       parentId: '#notion-content-container',
       onEditing: async (id: number, requestBody: { title: string; content: string }) => {
-        await debounce<any>(this.handleEditing(id.toString(), requestBody), 2000)
+        await this.handleEditing(id.toString(), requestBody)
       },
     })
   }
@@ -110,10 +112,15 @@ export default class App {
   }
 
   async handleEditing(documentId: string, { title, content }: { title: string; content: string }) {
-    await this.documentApi.editDocument(parseInt(documentId, 10), { title, content })
-    this.sidebarComponent.setState({
-      documents: await this.documentApi.getAllDocument(),
-    })
+    if (debounceTimer) {
+      clearTimeout(debounceTimer)
+    }
+    debounceTimer = setTimeout(async () => {
+      await this.documentApi.editDocument(parseInt(documentId, 10), { title, content })
+      this.sidebarComponent.setState({
+        documents: await this.documentApi.getAllDocument(),
+      })
+    }, 2000)
   }
 
   async route() {

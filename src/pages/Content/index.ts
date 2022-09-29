@@ -7,7 +7,8 @@ type State = IDocument | undefined
 export default class ContentPage {
   state: State
   Editor: Editor
-  onEditing?: (id: number, { title, content }: { title: string; content: string }) => void
+  onEditing?: any
+  // onEditing?: (id: number, { title, content }: { title: string; content: string }) => void
   constructor({ parentId, onEditing }: Props) {
     this.Editor = new Editor({ parentId, onEditing })
   }

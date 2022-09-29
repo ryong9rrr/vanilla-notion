@@ -5,5 +5,5 @@ export interface State {
 
 export interface Props {
   parentId: string
-  onSubmit?: (parentNodeId: number, title: string) => void
+  onSubmit?: ({ title, parentNodeId }: { title: string; parentNodeId?: number }) => void
 }

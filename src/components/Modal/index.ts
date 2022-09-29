@@ -7,7 +7,7 @@ const initialState = {
 }
 
 export default class Modal extends Component<State> {
-  onSubmit?: (parentNodeId: number, title: string) => void
+  onSubmit?: ({ title, parentNodeId }: { title: string; parentNodeId?: number }) => void
   constructor({ parentId, onSubmit }: Props) {
     super({ parentId, initialState, tag: 'div', template })
     this.onSubmit = onSubmit
@@ -33,8 +33,12 @@ export default class Modal extends Component<State> {
     }
     const $input = this.$container.querySelector(`#${ID_NAME.modalInput}`) as HTMLInputElement
     const title = $input.value
-    if (title && this.state.parentNodeId) {
-      this.onSubmit && this.onSubmit(this.state.parentNodeId, title)
+    if (title) {
+      this.onSubmit &&
+        this.onSubmit({
+          title,
+          parentNodeId: this.state.parentNodeId,
+        })
     }
     this.setState({
       ...this.state,
