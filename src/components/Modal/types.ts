@@ -1,9 +1,9 @@
 export interface State {
-  parentId?: string
+  parentNodeId?: number
   isView: boolean
 }
 
 export interface Props {
   parentId: string
-  onSubmit?: (parentId: string, title: string) => void
+  onSubmit?: (parentNodeId: number, title: string) => void
 }
