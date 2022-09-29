@@ -1,60 +1,86 @@
-// import { push } from '../core/router'
-// import { isCalledByNew, isValidTypeOfObject } from '../core/validate'
-// import { TYPE_SIDEBAR_STATE } from '../types/state'
-// import { hasClassName } from '../utils/constant'
-// import { attachToggleEventHandler } from '../utils/toggle'
-// import { CLASS_NAME, template } from './SideBar.template'
-
 import Component from '~/core/component'
 import { Props, State } from './types'
-import { template } from './template'
-
-// const clickedSideBarHeader = () => push('/')
-
-// const clickedSideBarList = (target: any) => {
-//   const $li = target.closest('li')
-//   if ($li) {
-//     const { documentId } = $li.dataset
-//     push(`/document/${documentId}`)
-//   }
-// }
-
-// const clickedRootDocumentAddButton = (onAdd: any) => onAdd(null)
-
-// const clickedChildDocumentAddButton = (target: any, onAdd: any) => {
-//   const $li = target.closest('li')
-//   if ($li) {
-//     const { documentId } = $li.dataset
-//     const title = $li.querySelector(`.${CLASS_NAME.title}`).textContent
-//     onAdd(documentId, title)
-//   }
-// }
-
-// const clickedRemoveButton = (target: any, onRemove: any) => {
-//   const $li = target.closest('li')
-//   if ($li) {
-//     const { documentId } = $li.dataset
-//     const title = $li.querySelector(`.${CLASS_NAME.title}`).textContent
-//     onRemove(documentId, title)
-//   }
-// }
-
-// const attachClickEventHander = (e: any, { onAdd, onRemove }: any) => {
-//   const { target } = e
-//   if (target.id === 'sidebar-header') return clickedSideBarHeader()
-
-//   if (target.id === 'root-add-button') return clickedRootDocumentAddButton(onAdd)
-
-//   if (hasClassName(target, CLASS_NAME.title)) return clickedSideBarList(target)
-
-//   if (hasClassName(target, CLASS_NAME.addButton))
-//     return clickedChildDocumentAddButton(target, onAdd)
-
-//   if (hasClassName(target, CLASS_NAME.removeButton)) return clickedRemoveButton(target, onRemove)
-// }
+import { CLASS_NAME, template } from './template'
+import { attachToggleEventHandler, hasClassName } from '~/utils/toggle'
 
 export default class SideBar extends Component<State> {
+  onAdd?: (documentId?: string, title?: string) => void
+  onRemove?: (documentId?: string, title?: string) => void
   constructor({ parentId, initialState, onAdd, onRemove }: Props) {
     super({ parentId, initialState, tag: 'div', template })
+
+    this.onAdd = onAdd
+    this.onRemove = onRemove
+
+    attachToggleEventHandler(this.$container)
+    this.attachEventHandler('click', this.handleClickEvents)
+  }
+
+  private handleClickEvents(e: Event) {
+    const $target = e.target as HTMLElement
+    if ($target.id === 'sidebar-header') {
+      this.handleClickSidebarHeader()
+      return
+    }
+
+    if ($target.id === 'root-add-button') {
+      this.handleClickCreateRootDocument()
+      return
+    }
+
+    if (hasClassName($target, CLASS_NAME.title)) {
+      this.handleClickSidebarList($target)
+      return
+    }
+
+    if (hasClassName($target, CLASS_NAME.addButton)) {
+      this.handleClickCreateChildDocument($target)
+      return
+    }
+
+    if (hasClassName($target, CLASS_NAME.removeButton)) {
+      this.handleClickRemoveButton($target)
+      return
+    }
+  }
+
+  private handleClickSidebarHeader() {
+    // 홈으로 보내야한다.
+  }
+
+  private handleClickCreateRootDocument() {
+    this.onAdd && this.onAdd()
+  }
+
+  private handleClickSidebarList($target: HTMLElement) {
+    const $li = $target.closest('li') as HTMLLIElement
+    if ($li) {
+      const { documentId } = $li.dataset
+      // push(`/document/${documentId}`) 로 보내야한다.
+    }
+  }
+
+  private handleClickCreateChildDocument($target: HTMLElement) {
+    const $li = $target.closest('li') as HTMLLIElement
+    if ($li) {
+      const { documentId } = $li.dataset
+      const $span = $li.querySelector(`.${CLASS_NAME.title}`) as HTMLSpanElement
+      if ($span) {
+        const title = $span.textContent || ''
+        this.onAdd && this.onAdd(documentId, title)
+      }
+    }
+  }
+
+  private handleClickRemoveButton($target: HTMLElement) {
+    const $li = $target.closest('li') as HTMLLIElement
+    if ($li) {
+      const { documentId } = $li.dataset
+      const $span = $li.querySelector(`.${CLASS_NAME.title}`) as HTMLSpanElement
+      if ($span) {
+        const title = $span.textContent || ''
+        this.onRemove && this.onRemove(documentId, title)
+      }
+    }
   }
 }

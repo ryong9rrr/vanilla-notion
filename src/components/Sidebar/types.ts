@@ -7,6 +7,6 @@ export interface State {
 export interface Props {
   parentId: string
   initialState: State
-  onAdd?: () => void
-  onRemove?: () => void
+  onAdd?: (documentId?: string, title?: string) => void
+  onRemove?: (documentId?: string, title?: string) => void
 }
