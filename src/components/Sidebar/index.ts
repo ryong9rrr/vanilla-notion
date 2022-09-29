@@ -13,7 +13,7 @@ export default class SideBar extends Component<State> {
     this.onAdd = onAdd
     this.onRemove = onRemove
 
-    attachToggleEventHandler(this.$container)
+    attachToggleEventHandler.bind(null, this.$container)
     this.attachEventHandler('click', this.handleClickEvents)
   }
 

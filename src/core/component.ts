@@ -45,7 +45,7 @@ export default class Component<T> {
   setState(nextState: T) {
     if (this.isDiff(nextState)) {
       this.state = nextState
-      this.render(false) // 상태를 업데이트 한다는 것은 이미 렌더링된 컴포넌트라는 것
+      this.render()
     }
   }
 

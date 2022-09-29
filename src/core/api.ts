@@ -15,6 +15,7 @@ export default class Api {
       const response = await fetch(`${this.API_END_POINT}${url}`, {
         ...options,
         headers: {
+          'x-username': 'yongsangyoon',
           'Content-Type': 'application/json',
         },
       })
