@@ -1,7 +1,7 @@
-import './css/index.css'
-import App from './js/App.js'
-import { getAllDocument } from './js/core/api.js'
-import { changeRoute } from './js/core/router.js'
+import './style/index.css'
+import App from './App'
+import { getAllDocument } from './core/api'
+import { changeRoute } from './core/router'
 
 const $target = document.querySelector('#root')
 
@@ -10,7 +10,7 @@ const app = new App({
   initialState: {
     username: '상윤',
     path: window.location.pathname,
-    documents: await getAllDocument(),
+    documents: getAllDocument(),
   },
 })
 

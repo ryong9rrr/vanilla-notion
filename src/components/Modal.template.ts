@@ -1,15 +1,15 @@
 export const ID_NAME = {
-  modalOverlay: "modal-overlay",
-  modalWrapper: "modal-wrapper",
-  modalContents: "modal-contents",
-  modalInput: "modal-input",
-};
+  modalOverlay: 'modal-overlay',
+  modalWrapper: 'modal-wrapper',
+  modalContents: 'modal-contents',
+  modalInput: 'modal-input',
+}
 
-export const template = (state) => {
-  const { isView } = state;
+export const template = (state: any) => {
+  const { isView } = state
 
   return `
-    <div style="display:${isView ? "block" : "none"}">
+    <div style="display:${isView ? 'block' : 'none'}">
       <div id="${ID_NAME.modalOverlay}">
         <div id="${ID_NAME.modalWrapper}">
           <div id="${ID_NAME.modalContents}">
@@ -20,5 +20,5 @@ export const template = (state) => {
         </div>
       </div>
     </div>
-  `;
-};
+  `
+}
