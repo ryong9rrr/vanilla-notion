@@ -1,4 +1,4 @@
-export interface IDocument {
+export type IDocument = {
   id: number
   title: string
   documents: IDocument[]

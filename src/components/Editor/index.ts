@@ -1,6 +1,6 @@
 import Component from '~/core/component'
 import { Props, State } from './types'
-import { ID_NAME, template } from './template'
+import { template } from './template'
 
 const initialState = {}
 

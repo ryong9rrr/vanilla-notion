@@ -6,7 +6,7 @@ export default class DocumentApi extends Api {
     return await this.request('/documents')
   }
 
-  async getDocument(documentId: number): Promise<IDocument> {
+  async getDocument(documentId: number): Promise<Required<IDocument>> {
     return await this.request(`/documents/${documentId}`)
   }
 
@@ -16,7 +16,7 @@ export default class DocumentApi extends Api {
   }: {
     title: string
     parentNodeId?: number
-  }): Promise<{ id: number; title: string; createdAt: string; updatedAt: string }> {
+  }): Promise<Required<Omit<IDocument, 'documents' | 'content'>>> {
     return await this.request('/documents', {
       method: 'POST',
       body: JSON.stringify({ title, parent: parentNodeId || null }),
