@@ -11,7 +11,7 @@ export default class Editor extends Component<State> {
   onEditing: OnEditing
   constructor({ parentId, onEditing }: Props) {
     super({ parentId, initialState, tag: 'div', template })
-    this.$container.id = 'editor'
+    this.$container.className = 'editor'
     this.onEditing = onEditing
     this.attachEventHandler('keyup', this.handleKeyup)
   }

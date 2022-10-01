@@ -1,4 +1,4 @@
-#modal-overlay {
+.modal-overlay {
   z-index: 1;
   position: fixed;
   width: 100%;
@@ -9,7 +9,7 @@
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-#modal-wrapper {
+.modal-wrapper {
   z-index: 0;
   display: flex;
   justify-content: center;
@@ -18,7 +18,7 @@
   height: 100%;
 }
 
-#modal-contents {
+.modal-contents {
   display: flex;
   padding: 2rem;
   flex-direction: column;
@@ -30,7 +30,7 @@
   overflow: hidden;
 }
 
-#modal-input {
+.modal-contents input[name='title'] {
   width: 100%;
   height: 7rem;
   font-size: 3rem;
@@ -38,10 +38,10 @@
   border-bottom: 0.5px solid gray;
 }
 
-#modal-input::placeholder {
+.modal-contents input[name='title']::placeholder {
   font-weight: 600;
 }
 
-#modal-input:focus {
+.modal-contents input[name='title']:focus {
   outline: none;
 }
