@@ -26,7 +26,6 @@ export default class App {
   $root: HTMLElement
   rootId: string
   state: State
-  $modalContainer: HTMLElement
   $sideBarContainer: HTMLElement
   $contentContainer: HTMLElement
   documentApi = new DocumentApi()
@@ -39,12 +38,11 @@ export default class App {
     this.$root.innerHTML = template
     this.state = initialState
 
-    this.$modalContainer = this.$root.querySelector('#notion-modal-container') as HTMLElement
     this.$sideBarContainer = this.$root.querySelector('#notion-sidebar-container') as HTMLElement
     this.$contentContainer = this.$root.querySelector('#notion-content-container') as HTMLElement
 
     this.modalComponent = new Modal({
-      parentId: '#notion-modal-container',
+      parentId: 'body',
       onSubmit: async ({ title, parentNodeId }) => {
         const newDocument = await this.documentApi.postNewDocument({ title, parentNodeId })
         this.sidebarComponent.setState({

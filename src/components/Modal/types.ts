@@ -1,3 +1,5 @@
+import { OnSubmit } from '~/models/document'
+
 export interface State {
   parentNodeId?: number
   isView: boolean
@@ -5,5 +7,5 @@ export interface State {
 
 export interface Props {
   parentId: string
-  onSubmit?: ({ title, parentNodeId }: { title: string; parentNodeId?: number }) => void
+  onSubmit: OnSubmit
 }

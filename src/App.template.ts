@@ -18,7 +18,6 @@ export const README = `
 `
 
 export const template = `
-  <div id="notion-modal-container"></div>
   <main id="notion-app">
     <nav id="notion-sidebar-container"></nav>
     <section id="notion-content-container"></section>

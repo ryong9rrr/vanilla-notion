@@ -16,3 +16,5 @@ export type OnEditing = ({
   title: string
   content: string
 }) => void
+
+export type OnSubmit = ({ title, parentNodeId }: { title: string; parentNodeId?: number }) => void

@@ -25,6 +25,26 @@ export default class Component<T> {
     this.render()
   }
 
+  componentDidUpdate() {}
+
+  setState(nextState: T) {
+    if (this.isDiff(nextState)) {
+      this.state = nextState
+      this.render()
+
+      this.componentDidUpdate()
+    }
+  }
+
+  // 따라서 렌더링시킬거라면 true(기본값)를, 상태만 변경할것이라면 false를 줘서 새로 DOM을 추가하지 않도록한다.
+  render(initialize: boolean = true) {
+    const $parentElement = document.querySelector(this.parentId) as HTMLElement
+    if (initialize) {
+      $parentElement.appendChild(this.$container)
+    }
+    this.$container.innerHTML = this.template(this.state)
+  }
+
   protected attachEventHandler(eventType: string, handler: Handler): void {
     if (!this.$container) {
       console.error('엘리먼트가 존재하지 않아요.')
@@ -40,21 +60,5 @@ export default class Component<T> {
       return true
     }
     return false
-  }
-
-  setState(nextState: T) {
-    if (this.isDiff(nextState)) {
-      this.state = nextState
-      this.render()
-    }
-  }
-
-  // 따라서 렌더링시킬거라면 true(기본값)를, 상태만 변경할것이라면 false를 줘서 새로 DOM을 추가하지 않도록한다.
-  render(initialize: boolean = true) {
-    const $parentElement = document.querySelector(this.parentId) as HTMLElement
-    if (initialize) {
-      $parentElement.appendChild(this.$container)
-    }
-    this.$container.innerHTML = this.template(this.state)
   }
 }
