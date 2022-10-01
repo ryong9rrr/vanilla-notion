@@ -1,9 +1,9 @@
 import App from './App'
 import { changeRoute } from './core/router'
-import DocumentApi from './services/document'
+import documentApi from './services/document'
 
 const fetchDocuments = async () => {
-  const documents = await new DocumentApi().getAllDocument()
+  const documents = await documentApi.getAllDocument()
 
   app.setState({
     ...app.state,
