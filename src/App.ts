@@ -3,7 +3,7 @@ import { Modal, Sidebar } from './components'
 import { README, template } from './App.template'
 import { IDocument } from './models/document'
 import { isNumber } from './utils/constants'
-import DocumentApi from './services/document'
+import documentApi from './services/document'
 import { push, redirect } from './core/router'
 import ContentPage from './pages/Content'
 import NotFoundPage from './pages/NotFound'
@@ -26,7 +26,6 @@ export default class App {
   $root: HTMLElement
   rootId: string
   state: State
-  documentApi = new DocumentApi()
   modalComponent: Modal
   sidebarComponent: SideBar
   contentPage: ContentPage
@@ -39,9 +38,9 @@ export default class App {
     this.modalComponent = new Modal({
       parentId: 'body',
       onSubmit: async ({ title, parentNodeId }) => {
-        const newDocument = await this.documentApi.postNewDocument({ title, parentNodeId })
+        const newDocument = await documentApi.postNewDocument({ title, parentNodeId })
         this.sidebarComponent.setState({
-          documents: await this.documentApi.getAllDocument(),
+          documents: await documentApi.getAllDocument(),
         })
         push(`/document/${newDocument.id}`)
       },
@@ -67,11 +66,11 @@ export default class App {
         if (window.confirm(`${title} 페이지를 삭제할까요?`)) {
           if (documentId) {
             history.replaceState(null, '', '/')
-            await this.documentApi.removeDocument(parseInt(documentId, 10))
+            await documentApi.removeDocument(parseInt(documentId, 10))
           }
 
           this.sidebarComponent.setState({
-            documents: await this.documentApi.getAllDocument(),
+            documents: await documentApi.getAllDocument(),
           })
 
           if (this.state.path.indexOf('/document/') === 0) {
@@ -109,9 +108,9 @@ export default class App {
       clearTimeout(debounceTimer)
     }
     debounceTimer = setTimeout(async () => {
-      await this.documentApi.editDocument(parseInt(documentId, 10), { title, content })
+      await documentApi.editDocument(parseInt(documentId, 10), { title, content })
       this.sidebarComponent.setState({
-        documents: await this.documentApi.getAllDocument(),
+        documents: await documentApi.getAllDocument(),
       })
     }, 2000)
   }
@@ -127,7 +126,7 @@ export default class App {
         $content.innerHTML = ``
         const [, , documentId] = path.split('/')
         if (!isNumber(documentId)) throw new Error()
-        const loadedContent = await this.documentApi.getDocument(parseInt(documentId, 10))
+        const loadedContent = await documentApi.getDocument(parseInt(documentId, 10))
         this.contentPage.setState({ document: loadedContent })
       } else {
         new NotFoundPage({ parentId: this.rootId })
