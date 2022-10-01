@@ -8,7 +8,7 @@
   height: 100vh;
 }
 
-#notion-sidebar-container {
+#notion-app-sidebar {
   display: flex;
   position: relative;
   flex-direction: column;
@@ -16,7 +16,7 @@
   background-color: #e7e6e4;
 }
 
-#notion-content-container {
+#notion-app-content {
   padding: 5rem;
   background-color: #fafafa;
   width: 100%;

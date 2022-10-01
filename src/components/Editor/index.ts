@@ -11,6 +11,7 @@ export default class Editor extends Component<State> {
   onEditing: OnEditing
   constructor({ parentId, onEditing }: Props) {
     super({ parentId, initialState, tag: 'div', template })
+    this.$container.id = 'editor'
     this.onEditing = onEditing
     this.attachEventHandler('keyup', this.handleKeyup)
   }
@@ -20,10 +21,10 @@ export default class Editor extends Component<State> {
     if (!$target) {
       return
     }
-    if ($target.id === 'editor-title') {
+    if ($target.tagName === 'INPUT' && $target.name === 'title') {
       this.state.document.title = $target.value
     }
-    if ($target.id === 'editor-content') {
+    if ($target.tagName === 'TEXTAREA' && $target.name === 'content') {
       this.state.document.content = $target.value
     }
 

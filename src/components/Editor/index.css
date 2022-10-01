@@ -1,11 +1,11 @@
-#notion-editor-container {
+#editor {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
-#editor-title {
+#editor input[name='title'] {
   background-color: inherit;
   font-weight: 600;
   width: 100%;
@@ -15,15 +15,15 @@
   border-bottom: 0.5px solid gray;
 }
 
-#editor-title::placeholder {
+#editor input[name='title']::placeholder {
   font-weight: 600;
 }
 
-#editor-title:focus {
+#editor input[name='title']:focus {
   outline: none;
 }
 
-#editor-content {
+#editor textarea[name='content'] {
   margin-top: 2rem;
   background-color: inherit;
   width: 100%;
@@ -31,6 +31,6 @@
   border: none;
 }
 
-#editor-content:focus {
+#editor textarea[name='content']:focus {
   outline: none;
 }

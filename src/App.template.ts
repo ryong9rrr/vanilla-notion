@@ -19,7 +19,7 @@ export const README = `
 
 export const template = `
   <main id="notion-app">
-    <nav id="notion-sidebar-container"></nav>
-    <section id="notion-content-container"></section>
+    <nav id="notion-app-sidebar"></nav>
+    <section id="notion-app-content"></section>
   </main>
 `

@@ -26,8 +26,6 @@ export default class App {
   $root: HTMLElement
   rootId: string
   state: State
-  $sideBarContainer: HTMLElement
-  $contentContainer: HTMLElement
   documentApi = new DocumentApi()
   modalComponent: Modal
   sidebarComponent: SideBar
@@ -37,9 +35,6 @@ export default class App {
     this.rootId = rootId
     this.$root.innerHTML = template
     this.state = initialState
-
-    this.$sideBarContainer = this.$root.querySelector('#notion-sidebar-container') as HTMLElement
-    this.$contentContainer = this.$root.querySelector('#notion-content-container') as HTMLElement
 
     this.modalComponent = new Modal({
       parentId: 'body',
@@ -53,7 +48,7 @@ export default class App {
     })
 
     this.sidebarComponent = new Sidebar({
-      parentId: '#notion-sidebar-container',
+      parentId: '#notion-app-sidebar',
       initialState: {
         documents: this.state.documents,
       },
@@ -90,7 +85,7 @@ export default class App {
     })
 
     this.contentPage = new ContentPage({
-      parentId: '#notion-content-container',
+      parentId: '#notion-app-content',
       onEditing: async ({ id, title, content }: { id: number; title: string; content: string }) => {
         await this.handleEditing(id.toString(), { title, content })
       },
@@ -124,11 +119,12 @@ export default class App {
   async route() {
     const { path } = this.state
     this.sidebarComponent.setState({ documents: this.state.documents })
+    const $content = this.$root.querySelector('#notion-app-content') as HTMLElement
     try {
       if (path === '/') {
-        this.$contentContainer.innerHTML = README
+        $content.innerHTML = README
       } else if (path.includes('/document/')) {
-        this.$contentContainer.innerHTML = ``
+        $content.innerHTML = ``
         const [, , documentId] = path.split('/')
         if (!isNumber(documentId)) throw new Error()
         const loadedContent = await this.documentApi.getDocument(parseInt(documentId, 10))
