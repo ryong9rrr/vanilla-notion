@@ -1,7 +1,7 @@
 import Api from '~/core/api'
 import { IDocument } from '~/models/document'
 
-class DocumentApi extends Api {
+export default class DocumentApi extends Api {
   async getAllDocument(): Promise<IDocument[]> {
     return await this.request('/documents')
   }
@@ -40,7 +40,3 @@ class DocumentApi extends Api {
     })
   }
 }
-
-const documentApi = new DocumentApi()
-
-export default documentApi
