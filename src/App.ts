@@ -93,8 +93,8 @@ export default class App {
 
     this.contentPage = new ContentPage({
       parentId: '#notion-content-container',
-      onEditing: async (id: number, requestBody: { title: string; content: string }) => {
-        await this.handleEditing(id.toString(), requestBody)
+      onEditing: async ({ id, title, content }: { id: number; title: string; content: string }) => {
+        await this.handleEditing(id.toString(), { title, content })
       },
     })
   }
@@ -134,7 +134,7 @@ export default class App {
         const [, , documentId] = path.split('/')
         if (!isNumber(documentId)) throw new Error()
         const loadedContent = await this.documentApi.getDocument(parseInt(documentId, 10))
-        this.contentPage.setState({ ...loadedContent })
+        this.contentPage.setState({ document: loadedContent })
       } else {
         new NotFoundPage({ parentId: this.rootId })
       }

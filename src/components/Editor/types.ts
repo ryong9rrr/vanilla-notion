@@ -1,15 +1,10 @@
-import { IDocument } from '~/models/document'
+import { IDocument, OnEditing } from '~/models/document'
 
 export interface State {
-  id?: number
-  title?: string
-  content?: string
-  documents?: IDocument[]
-  createdAt?: string
-  updatedAt?: string
+  document: Partial<IDocument>
 }
 
 export interface Props {
   parentId: string
-  onEditing?: (id: number, { title, content }: { title: string; content: string }) => void
+  onEditing: OnEditing
 }

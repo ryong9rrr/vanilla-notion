@@ -6,10 +6,11 @@ export const ID_NAME = {
 }
 
 export const template = (state: State) => {
-  if (!state.title) {
+  const { document } = state
+  if (!document.id) {
     return ''
   }
-  const { title, content } = state
+  const { title, content } = document
   return `
     <div id="notion-editor-container">
       <input id="${ID_NAME.title}" type="text" name="title" placeholder="제목을 입력하세요." value="${title}" />

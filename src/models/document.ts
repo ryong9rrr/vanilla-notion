@@ -6,3 +6,13 @@ export type IDocument = {
   createdAt?: string
   updatedAt?: string
 }
+
+export type OnEditing = ({
+  id,
+  title,
+  content,
+}: {
+  id: number
+  title: string
+  content: string
+}) => void
