@@ -7,7 +7,7 @@ import ContentPage from './pages/Content'
 import NotFoundPage from './pages/NotFound'
 import SideBar from './components/Sidebar'
 import HomePage from './pages/Home'
-import Router from './core/router2'
+import Router from './core/router'
 
 interface State {
   documents: IDocument[]

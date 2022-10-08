@@ -1,26 +1,26 @@
 import Component from './component'
 
-interface Props<T> {
+type Listener = () => void
+
+interface Props {
   parentId: string
-  initialState: T
   template: () => string
 }
 
-export default class View<T> {
+export default class View {
   parentId: string
-  state: T
   template: () => string
-  subscribers: Component<unknown>[] = []
 
-  constructor({ parentId, initialState, template }: Props<T>) {
+  constructor({ parentId, template }: Props) {
     this.parentId = parentId
-    this.state = initialState
     this.template = template
   }
 
+  componentDidMount() {}
+
   render() {
     this.mount()
-    this.subscribers.forEach((component) => component.render())
+    this.componentDidMount()
   }
 
   private mount() {

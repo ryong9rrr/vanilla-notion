@@ -1,7 +1,7 @@
 import { IDocument, OnEditing } from '~/models/document'
 
 export interface State {
-  document: Partial<IDocument>
+  document: any
 }
 
 export interface Props {

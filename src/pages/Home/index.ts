@@ -19,16 +19,12 @@ const template = () => `
 </ul>
 `
 
-interface State {}
-
 interface Props {
   parentId: string
 }
 
-const initialState: State = {}
-
-export default class HomePage extends View<State> {
+export default class HomePage extends View {
   constructor({ parentId }: Props) {
-    super({ parentId, initialState, template })
+    super({ parentId, template })
   }
 }

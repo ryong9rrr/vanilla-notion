@@ -2,8 +2,7 @@ import Component from '~/core/component'
 import { Props, State } from './types'
 import { CLASS_NAME, template } from './template'
 import { attachToggleEventHandler, hasClassName } from '~/utils/toggle'
-import { push } from '~/core/router'
-import Router from '~/core/router2'
+import Router from '~/core/router'
 
 export default class SideBar extends Component<State> {
   onAdd?: (documentId?: string, title?: string) => void

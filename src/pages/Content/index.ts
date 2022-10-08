@@ -1,34 +1,28 @@
 import { Editor } from '~/components'
 import View from '~/core/view'
-import { Props, State } from './types'
+import documentApi from '~/services/document'
+import { Props } from './types'
 
 const template = () => ``
 
-const initialState: State = {
-  document: null,
-}
-export default class ContentPage extends View<State> {
+export default class ContentPage extends View {
   Editor: Editor
   constructor({ parentId, onEditing }: Props) {
-    super({ parentId, initialState, template })
+    super({ parentId, template })
     this.Editor = new Editor({ parentId, onEditing })
   }
 
-  setState(nextState: State) {
-    this.state = nextState
-    if (this.state.document === null) {
-      return
-    }
-    const { id, title, content, documents, createdAt, updatedAt } = this.state.document
+  async componentDidMount() {
+    const params = window.location.pathname
+    const id = params.replace('/document/', '')
+    const document = await this.fetchDocument(parseInt(id, 10))
     this.Editor.setState({
-      document: {
-        id,
-        title: title || '',
-        content: content || '',
-        documents,
-        createdAt,
-        updatedAt,
-      },
+      document,
     })
+  }
+
+  async fetchDocument(id: number) {
+    const document = await documentApi.getDocument(id)
+    return document
   }
 }
