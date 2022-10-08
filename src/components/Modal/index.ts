@@ -1,7 +1,15 @@
 import Component from '~/core/component'
-import { Props, State } from './types'
-import { template } from './template'
 import { OnSubmit } from '~/models/document'
+
+type State = {
+  parentNodeId?: number
+  isView: boolean
+}
+
+interface Props {
+  parentId: string
+  onSubmit: OnSubmit
+}
 
 const initialState: State = {
   isView: false,
@@ -10,10 +18,27 @@ const initialState: State = {
 export default class Modal extends Component<State> {
   onSubmit: OnSubmit
   constructor({ parentId, onSubmit }: Props) {
-    super({ parentId, initialState, tag: 'div', template })
+    super({ parentId, initialState })
     this.$container.className = 'modal'
     this.onSubmit = onSubmit
     this.attachEventHandler('click', this.handleCloseModal)
+  }
+
+  template(state: State): string {
+    const { isView } = state
+    if (!isView) {
+      return ''
+    }
+
+    return `
+    <div class="modal-overlay">
+      <div class="modal-wrapper">
+        <div class="modal-contents">
+          <input name="title" placeholder="제목을 입력하세요" />
+        </div>
+      </div>
+    </div>
+  `
   }
 
   componentDidUpdate() {

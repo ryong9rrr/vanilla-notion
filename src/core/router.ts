@@ -1,27 +1,76 @@
-const ROUTE_CHANGE_EVENT_NAME = 'route-change'
+import View from './view'
 
-export const changeRoute = (onRoute: any) => {
-  window.addEventListener(ROUTE_CHANGE_EVENT_NAME, ((e: CustomEvent) => {
-    const { nextUrl } = e.detail
-    if (nextUrl) {
-      history.pushState(null, '', nextUrl)
-      onRoute()
+const ROUTE_EVENT_TYPE = 'route-change'
+
+type RouteInfo = {
+  path: RegExp
+  page: View
+}
+
+export default class Router {
+  static navigate = (path: string) => {
+    if (window.location.pathname !== path) {
+      window.dispatchEvent(
+        new CustomEvent(ROUTE_EVENT_TYPE, {
+          detail: {
+            path,
+          },
+        })
+      )
     }
-  }) as EventListener)
-}
+  }
 
-export const push = (nextUrl: string) => {
-  window.dispatchEvent(
-    new CustomEvent('route-change', {
-      detail: { nextUrl },
-    })
-  )
-}
+  private static instance: Router
+  private routeTable: RouteInfo[] = []
+  private defaultPage: View | null = null
+  private notFoundPage: View | null = null
 
-export const redirect = () => {
-  window.dispatchEvent(
-    new CustomEvent('route-change', {
-      detail: { nextUrl: '/' },
-    })
-  )
+  constructor() {
+    if (Router.instance) {
+      return Router.instance
+    }
+    Router.instance = this
+    window.addEventListener('load', this.route.bind(this))
+    window.addEventListener('popstate', this.route.bind(this))
+    window.addEventListener(ROUTE_EVENT_TYPE, ((e: CustomEvent) => {
+      const { path } = e.detail
+      if (path) {
+        window.history.pushState(null, '', path)
+        this.route()
+      }
+    }) as EventListener)
+  }
+
+  setDefaultPage(page: View) {
+    this.defaultPage = page
+  }
+
+  setNotFoundPage(page: View) {
+    this.notFoundPage = page
+  }
+
+  addRoutePath(path: RegExp, page: View) {
+    this.routeTable.push({ path, page })
+  }
+
+  route() {
+    const { pathname } = window.location
+    if (pathname === '/' && this.defaultPage) {
+      this.defaultPage.render()
+      return
+    }
+
+    for (const routeInfo of this.routeTable) {
+      const { path, page } = routeInfo
+      const isMatched = path.test(pathname)
+      if (isMatched) {
+        page.render()
+        return
+      }
+    }
+
+    if (this.notFoundPage) {
+      this.notFoundPage.render()
+    }
+  }
 }

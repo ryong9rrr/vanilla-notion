@@ -1,5 +1,4 @@
 import { IDocument } from '~/models/document'
-import { State } from './types'
 
 export const CLASS_NAME = {
   list: 'sidebar-document-list',
@@ -10,7 +9,7 @@ export const CLASS_NAME = {
   addAndRemoveButton: 'sidebar-add-remove-button',
 } as const
 
-const makeListHtml = (documents: IDocument[], depth = 1): string => {
+export const makeListHtml = (documents: IDocument[], depth = 1): string => {
   if (documents.length === 0) {
     return `
       <ul class="nested sidebar-document-list-last" style="padding-left:${15 * depth}px">
@@ -35,18 +34,4 @@ const makeListHtml = (documents: IDocument[], depth = 1): string => {
 `
     )
     .join('')
-}
-
-export const template = ({ documents }: State) => {
-  return `
-      <header id="sidebar-header" class="sidebar-component">
-        📔 상윤의 notion
-      </header>
-      <div id="sidebar-list">
-        ${makeListHtml(documents)}
-      </div>
-      <div id="root-add-button" class="sidebar-component">
-        + 새 페이지
-      </div>
-    `
 }

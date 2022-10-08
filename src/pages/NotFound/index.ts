@@ -1,19 +1,15 @@
-const template = `<h1>404 Not Found</h1>`
+import View from '~/core/view'
 
 interface Props {
   parentId: string
 }
 
-export default class NotFoundPage {
-  parentId: string
+export default class NotFoundPage extends View {
   constructor({ parentId }: Props) {
-    this.parentId = parentId
-
-    this.render()
+    super({ parentId })
   }
 
-  render() {
-    const $container = document.querySelector(this.parentId) as HTMLElement
-    $container.innerHTML = template
+  template(): string {
+    return `<h1>404 Not Found</h1>`
   }
 }

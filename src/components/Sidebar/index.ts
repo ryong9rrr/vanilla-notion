@@ -1,19 +1,42 @@
 import Component from '~/core/component'
-import { Props, State } from './types'
-import { CLASS_NAME, template } from './template'
+import { CLASS_NAME, makeListHtml } from './template'
 import { attachToggleEventHandler, hasClassName } from '~/utils/toggle'
-import { push } from '~/core/router'
+import Router from '~/core/router'
+import { IDocument } from '~/models/document'
+
+type State = {
+  documents: IDocument[]
+}
+
+interface Props {
+  parentId: string
+  initialState: State
+  onAdd?: (documentId?: string, title?: string) => void
+  onRemove: (documentId: string) => void
+}
 
 export default class SideBar extends Component<State> {
   onAdd?: (documentId?: string, title?: string) => void
-  onRemove?: (documentId?: string, title?: string) => void
+  onRemove: (documentId: string) => void
   constructor({ parentId, initialState, onAdd, onRemove }: Props) {
-    super({ parentId, initialState, tag: 'div', template })
-
+    super({ parentId, initialState })
     this.onAdd = onAdd
     this.onRemove = onRemove
-
     this.attachEventHandler('click', this.handleClickEvents)
+  }
+
+  template(state: State): string {
+    return `
+      <header id="sidebar-header" class="sidebar-component">
+        📔 상윤의 notion
+      </header>
+      <div id="sidebar-list">
+        ${makeListHtml(state.documents)}
+      </div>
+      <div id="root-add-button" class="sidebar-component">
+        + 새 페이지
+      </div>
+    `
   }
 
   private handleClickEvents(e: Event) {
@@ -52,7 +75,7 @@ export default class SideBar extends Component<State> {
   }
 
   private handleClickSidebarHeader() {
-    push('/')
+    Router.navigate('/')
   }
 
   private handleClickCreateRootDocument() {
@@ -63,7 +86,7 @@ export default class SideBar extends Component<State> {
     const $li = $target.closest('li') as HTMLLIElement
     if ($li) {
       const { documentId } = $li.dataset
-      push(`/document/${documentId}`)
+      Router.navigate(`/document/${documentId}`)
     }
   }
 
@@ -86,7 +109,7 @@ export default class SideBar extends Component<State> {
       const $span = $li.querySelector(`.${CLASS_NAME.title}`) as HTMLSpanElement
       if ($span) {
         const title = $span.textContent || ''
-        this.onRemove && this.onRemove(documentId, title)
+        documentId && this.onRemove(documentId)
       }
     }
   }
