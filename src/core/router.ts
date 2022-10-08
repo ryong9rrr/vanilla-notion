@@ -9,13 +9,15 @@ type RouteInfo = {
 
 export default class Router {
   static navigate = (path: string) => {
-    window.dispatchEvent(
-      new CustomEvent(ROUTE_EVENT_TYPE, {
-        detail: {
-          path,
-        },
-      })
-    )
+    if (window.location.pathname !== path) {
+      window.dispatchEvent(
+        new CustomEvent(ROUTE_EVENT_TYPE, {
+          detail: {
+            path,
+          },
+        })
+      )
+    }
   }
 
   private static instance: Router

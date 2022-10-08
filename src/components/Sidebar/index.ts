@@ -19,6 +19,8 @@ export default class SideBar extends Component<State> {
   private handleClickEvents(e: Event) {
     const $target = e.target as HTMLElement
 
+    console.log($target)
+
     if ($target.id === 'sidebar-header') {
       this.handleClickSidebarHeader()
       return
