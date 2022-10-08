@@ -3,6 +3,7 @@ import { Props, State } from './types'
 import { CLASS_NAME, template } from './template'
 import { attachToggleEventHandler, hasClassName } from '~/utils/toggle'
 import { push } from '~/core/router'
+import Router from '~/core/router2'
 
 export default class SideBar extends Component<State> {
   onAdd?: (documentId?: string, title?: string) => void
@@ -52,7 +53,7 @@ export default class SideBar extends Component<State> {
   }
 
   private handleClickSidebarHeader() {
-    push('/')
+    Router.navigate('/')
   }
 
   private handleClickCreateRootDocument() {
@@ -63,7 +64,7 @@ export default class SideBar extends Component<State> {
     const $li = $target.closest('li') as HTMLLIElement
     if ($li) {
       const { documentId } = $li.dataset
-      push(`/document/${documentId}`)
+      Router.navigate(`/document/${documentId}`)
     }
   }
 

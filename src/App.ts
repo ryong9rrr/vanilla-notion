@@ -22,8 +22,6 @@ let debounceTimer = null as any
 
 export default class App {
   router = new Router()
-  $root: HTMLElement
-  rootId: string
   state: State
   modalComponent: Modal
   sidebarComponent: SideBar
@@ -31,9 +29,7 @@ export default class App {
   contentPage: ContentPage
   notFoundPage: NotFoundPage
   constructor({ rootId, initialState }: Props) {
-    this.$root = document.querySelector(rootId) as HTMLElement
-    this.rootId = rootId
-    this.$root.innerHTML = template
+    this.mount(rootId)
     this.state = initialState
 
     this.modalComponent = new Modal({
@@ -94,7 +90,9 @@ export default class App {
       },
     })
 
-    this.notFoundPage = new NotFoundPage({ parentId: this.rootId })
+    this.notFoundPage = new NotFoundPage({ parentId: rootId })
+
+    this.fetchDocuments()
   }
 
   private openModal(documentId?: number) {
@@ -123,5 +121,25 @@ export default class App {
     this.router.setDefaultPage(this.homePage)
     this.router.addRoutePath(/^\/document\/[\w]+\/?$/, this.contentPage)
     this.router.setNotFoundPage(this.notFoundPage)
+  }
+
+  private mount(rootId: string) {
+    const $root = document.querySelector(rootId) as HTMLElement
+    $root.innerHTML = template
+  }
+
+  private async fetchDocuments() {
+    const documents = await documentApi.getAllDocument()
+    this.setState({
+      ...this.state,
+      documents,
+    })
+  }
+
+  private setState(nextState: State) {
+    this.state = nextState
+    this.sidebarComponent.setState({
+      documents: this.state.documents,
+    })
   }
 }
