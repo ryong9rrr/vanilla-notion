@@ -1,4 +1,4 @@
-type Handler = (e: Event) => void
+type EventHandler = (e: Event) => void
 
 type Props<T> = {
   parentId: string
@@ -10,20 +10,28 @@ export default abstract class Component<T> {
   private prevState: string
   parentId: string
   $container: HTMLElement
-  state: T
+  _state: T
 
   constructor({ parentId, tag, initialState }: Props<T>) {
     this.parentId = parentId
     this.$container = tag ? document.createElement(tag) : document.createElement('div')
-    this.state = initialState
-    this.prevState = JSON.stringify(this.state)
+    this._state = initialState
+    this.prevState = JSON.stringify(this._state)
 
     this.render()
   }
 
+  get state() {
+    return this._state
+  }
+
+  set state(nextState: T) {
+    throw new SyntaxError('직접 state를 변경하지말고 setState 메서드를 이용하세요.')
+  }
+
   setState(nextState: T) {
     if (this.isDiff(nextState)) {
-      this.state = nextState
+      this._state = nextState
       this.render()
       this.componentDidUpdate()
     }
@@ -38,18 +46,18 @@ export default abstract class Component<T> {
 
   protected componentDidUpdate() {}
 
-  protected attachEventHandler(eventType: string, handler: Handler): void {
+  protected attachEventHandler(eventType: string, eventHandler: EventHandler): void {
     if (!this.$container) {
       console.error('엘리먼트가 존재하지 않아요.')
-    } else {
-      this.$container.addEventListener(eventType, handler.bind(this))
+      return
     }
+    this.$container.addEventListener(eventType, eventHandler.bind(this))
   }
 
   private mount() {
     const $parentElement = document.querySelector(this.parentId) as HTMLElement
     $parentElement.appendChild(this.$container)
-    this.$container.innerHTML = this.template(this.state)
+    this.$container.innerHTML = this.template(this._state)
   }
 
   private isDiff(state: T) {

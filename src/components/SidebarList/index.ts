@@ -21,7 +21,6 @@ export default class SidebarList extends Component<State> {
     super({ parentId, initialState, tag: 'ul' })
     this.onAdd = onAdd
     this.onRemove = onRemove
-
     this.attachEventHandler('click', this.handleClickEvents)
   }
 
