@@ -20,12 +20,10 @@ export default class Api {
         },
       })
       if (!response.ok) {
-        window.alert('잘못된 요청이에요.')
-        throw new Error('fetch response error')
+        throw new Error('존재하지 않는 페이지입니다.')
       }
       return response.json()
     } catch (e) {
-      window.alert('알 수 없는 오류가 발생했어요.')
       throw new Error('fetch response error')
     }
   }

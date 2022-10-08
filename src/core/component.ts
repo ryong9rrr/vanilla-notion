@@ -2,48 +2,41 @@ type Handler = (e: Event) => void
 
 type Props<T> = {
   parentId: string
-  tag: string
+  tag?: string
   initialState: T
-  template: (state: T) => string
 }
 
-export default class Component<T> {
+export default abstract class Component<T> {
   private prevState: string
   parentId: string
   $container: HTMLElement
   state: T
-  template: (state: T) => string
-  //components: Component<any>[] = []
 
-  constructor({ parentId, tag, initialState, template }: Props<T>) {
+  constructor({ parentId, tag, initialState }: Props<T>) {
     this.parentId = parentId
-    this.$container = document.createElement(tag)
+    this.$container = tag ? document.createElement(tag) : document.createElement('div')
     this.state = initialState
     this.prevState = JSON.stringify(this.state)
-    this.template = template
 
     this.render()
   }
-
-  componentDidUpdate() {}
 
   setState(nextState: T) {
     if (this.isDiff(nextState)) {
       this.state = nextState
       this.render()
-
       this.componentDidUpdate()
     }
   }
 
-  // 따라서 렌더링시킬거라면 true(기본값)를, 상태만 변경할것이라면 false를 줘서 새로 DOM을 추가하지 않도록한다.
-  render(initialize: boolean = true) {
-    const $parentElement = document.querySelector(this.parentId) as HTMLElement
-    if (initialize) {
-      $parentElement.appendChild(this.$container)
-    }
-    this.$container.innerHTML = this.template(this.state)
+  render() {
+    this.mount()
+    this.componentDidMount()
   }
+
+  protected componentDidMount() {}
+
+  protected componentDidUpdate() {}
 
   protected attachEventHandler(eventType: string, handler: Handler): void {
     if (!this.$container) {
@@ -51,6 +44,12 @@ export default class Component<T> {
     } else {
       this.$container.addEventListener(eventType, handler.bind(this))
     }
+  }
+
+  private mount() {
+    const $parentElement = document.querySelector(this.parentId) as HTMLElement
+    $parentElement.appendChild(this.$container)
+    this.$container.innerHTML = this.template(this.state)
   }
 
   private isDiff(state: T) {
@@ -61,4 +60,6 @@ export default class Component<T> {
     }
     return false
   }
+
+  abstract template(state: T): string
 }

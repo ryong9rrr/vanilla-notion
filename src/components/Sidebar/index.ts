@@ -1,25 +1,46 @@
 import Component from '~/core/component'
-import { Props, State } from './types'
-import { CLASS_NAME, template } from './template'
+import { CLASS_NAME, makeListHtml } from './template'
 import { attachToggleEventHandler, hasClassName } from '~/utils/toggle'
 import Router from '~/core/router'
+import { IDocument } from '~/models/document'
+
+type State = {
+  documents: IDocument[]
+}
+
+interface Props {
+  parentId: string
+  initialState: State
+  onAdd?: (documentId?: string, title?: string) => void
+  onRemove?: (documentId?: string, title?: string) => void
+}
 
 export default class SideBar extends Component<State> {
   onAdd?: (documentId?: string, title?: string) => void
   onRemove?: (documentId?: string, title?: string) => void
   constructor({ parentId, initialState, onAdd, onRemove }: Props) {
-    super({ parentId, initialState, tag: 'div', template })
-
+    super({ parentId, initialState })
     this.onAdd = onAdd
     this.onRemove = onRemove
-
     this.attachEventHandler('click', this.handleClickEvents)
+  }
+
+  template(state: State): string {
+    return `
+      <header id="sidebar-header" class="sidebar-component">
+        📔 상윤의 notion
+      </header>
+      <div id="sidebar-list">
+        ${makeListHtml(state.documents)}
+      </div>
+      <div id="root-add-button" class="sidebar-component">
+        + 새 페이지
+      </div>
+    `
   }
 
   private handleClickEvents(e: Event) {
     const $target = e.target as HTMLElement
-
-    console.log($target)
 
     if ($target.id === 'sidebar-header') {
       this.handleClickSidebarHeader()

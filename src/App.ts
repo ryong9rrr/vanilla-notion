@@ -1,13 +1,10 @@
-import './style/index.css'
-import { Modal, Sidebar } from './components'
-import { template } from './App.template'
 import { IDocument } from './models/document'
-import documentApi from './services/document'
-import ContentPage from './pages/Content'
-import NotFoundPage from './pages/NotFound'
-import SideBar from './components/Sidebar'
-import HomePage from './pages/Home'
 import Router from './core/router'
+import documentApi from './services/document'
+import { ContentPage, NotFoundPage, HomePage } from './pages'
+import { Modal, Sidebar } from './components'
+import './style/index.css'
+import { template } from './App.template'
 
 interface State {
   documents: IDocument[]
@@ -24,7 +21,7 @@ export default class App {
   router = new Router()
   state: State
   modalComponent: Modal
-  sidebarComponent: SideBar
+  sidebarComponent: Sidebar
   homePage: HomePage
   contentPage: ContentPage
   notFoundPage: NotFoundPage
@@ -95,6 +92,34 @@ export default class App {
     this.fetchDocuments()
   }
 
+  route() {
+    this.router.setDefaultPage(this.homePage)
+    this.router.addRoutePath(/^\/document\/[\w]+\/?$/, this.contentPage)
+    this.router.setNotFoundPage(this.notFoundPage)
+  }
+
+  private mount(rootId: string) {
+    const $root = document.querySelector(rootId) as HTMLElement
+    $root.innerHTML = template
+  }
+
+  private setState(nextState: State) {
+    this.state = nextState
+    this.sidebarComponent.setState({
+      documents: this.state.documents,
+    })
+  }
+
+  private async fetchDocuments() {
+    const documents = await documentApi.getAllDocument()
+    this.setState({
+      ...this.state,
+      documents,
+    })
+  }
+
+  private async handleSubmit() {}
+
   private openModal(documentId?: number) {
     this.modalComponent.setState({
       isView: true,
@@ -115,31 +140,5 @@ export default class App {
         documents: await documentApi.getAllDocument(),
       })
     }, 2000)
-  }
-
-  route() {
-    this.router.setDefaultPage(this.homePage)
-    this.router.addRoutePath(/^\/document\/[\w]+\/?$/, this.contentPage)
-    this.router.setNotFoundPage(this.notFoundPage)
-  }
-
-  private mount(rootId: string) {
-    const $root = document.querySelector(rootId) as HTMLElement
-    $root.innerHTML = template
-  }
-
-  private async fetchDocuments() {
-    const documents = await documentApi.getAllDocument()
-    this.setState({
-      ...this.state,
-      documents,
-    })
-  }
-
-  private setState(nextState: State) {
-    this.state = nextState
-    this.sidebarComponent.setState({
-      documents: this.state.documents,
-    })
   }
 }

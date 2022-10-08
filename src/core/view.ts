@@ -1,30 +1,25 @@
-import Component from './component'
-
-type Listener = () => void
-
 interface Props {
   parentId: string
-  template: () => string
 }
 
-export default class View {
-  parentId: string
-  template: () => string
+export default abstract class View {
+  protected parentId: string
 
-  constructor({ parentId, template }: Props) {
+  constructor({ parentId }: Props) {
     this.parentId = parentId
-    this.template = template
   }
-
-  componentDidMount() {}
 
   render() {
     this.mount()
     this.componentDidMount()
   }
 
+  protected componentDidMount() {}
+
   private mount() {
     const $parentElement = document.querySelector(this.parentId) as HTMLElement
     $parentElement.innerHTML = this.template()
   }
+
+  abstract template(): string
 }
