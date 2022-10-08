@@ -10,24 +10,18 @@ type State = {
 interface Props {
   parentId: string
   initialState: State
-  onAdd: (documentId?: string, title?: string) => void
-  onRemove: (documentId: string) => void
+  onAdd: (documentId?: number, title?: string) => void
+  onRemove: (documentId: number) => void
 }
 
 export default class Sidebar extends Component<State> {
-  private SidebarList: SidebarList
-  private onAdd: (documentId?: string, title?: string) => void
+  private onAdd: (documentId?: number, title?: string) => void
+  private onRemove: (documentId: number) => void
   constructor({ parentId, initialState, onAdd, onRemove }: Props) {
     super({ parentId, initialState })
     this.onAdd = onAdd
+    this.onRemove = onRemove
     this.attachEventHandler('click', this.handleClickEvents)
-
-    this.SidebarList = new SidebarList({
-      parentId: '#sidebar-list',
-      initialState,
-      onAdd,
-      onRemove,
-    })
   }
 
   template(state: State): string {
@@ -43,10 +37,19 @@ export default class Sidebar extends Component<State> {
   }
 
   protected componentDidUpdate(): void {
-    this.SidebarList.setState({
-      ...this.SidebarList.state,
-      documents: this.state.documents,
-    })
+    console.log(this.state.documents)
+    this.state.documents.map(
+      (document) =>
+        new SidebarList({
+          parentId: '#sidebar-list',
+          initialState: {
+            isSpread: false,
+            document,
+          },
+          onAdd: this.onAdd.bind(this),
+          onRemove: this.onRemove.bind(this),
+        })
+    )
   }
 
   private handleClickEvents(e: Event) {

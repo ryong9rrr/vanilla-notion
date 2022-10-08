@@ -13,15 +13,16 @@ export const attachToggleEventHandler = ($container: HTMLElement) => {
 }
 
 export const spreadToggle = ($parentElement: HTMLElement) => {
-  const $parent = ($parentElement.parentElement as HTMLElement).closest('ul')
-  if ($parent) {
-    const $children = $parent.children
-    for (const $child of Array.from($children)) {
-      if (hasClassName($child, 'nested')) {
-        $child.classList.toggle('active')
-        $parentElement.classList.toggle('caret-down')
-      }
-      $parentElement.classList.toggle('caret-down')
-    }
-  }
+  console.log($parentElement)
+  // const $parent = ($parentElement.parentElement as HTMLElement).closest('ul')
+  // if ($parent) {
+  //   const $children = $parent.children
+  //   for (const $child of Array.from($children)) {
+  //     if (hasClassName($child, 'nested')) {
+  //       $child.classList.toggle('active')
+  //       $parentElement.classList.toggle('caret-down')
+  //     }
+  //     $parentElement.classList.toggle('caret-down')
+  //   }
+  // }
 }

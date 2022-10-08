@@ -37,8 +37,8 @@ export default abstract class Component<T> {
     }
   }
 
-  private render() {
-    this.mount()
+  private render(append = true) {
+    this.mount(append)
     this.componentDidMount()
   }
 
@@ -54,9 +54,11 @@ export default abstract class Component<T> {
     this.$container.addEventListener(eventType, eventHandler.bind(this))
   }
 
-  private mount() {
+  private mount(append: boolean) {
     const $parentElement = document.querySelector(this.parentId) as HTMLElement
-    $parentElement.appendChild(this.$container)
+    if (append) {
+      $parentElement.appendChild(this.$container)
+    }
     this.$container.innerHTML = this.template(this._state)
   }
 

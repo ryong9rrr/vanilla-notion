@@ -97,24 +97,24 @@ export default class App {
     Router.navigate(`/document/${newDocument.id}`)
   }
 
-  private async handleClickSidebarAddButton(documentId?: string, title?: string) {
+  private async handleClickSidebarAddButton(documentId?: number, title?: string) {
     if (!documentId) {
       if (window.confirm(`새로운 페이지를 생성할까요?`)) {
         this.openModal()
       }
     } else {
       if (window.confirm(`${title} 페이지 아래에 하위페이지를 추가할까요?`)) {
-        this.openModal(parseInt(documentId, 10))
+        this.openModal(documentId)
       }
     }
   }
 
-  private async handleClickSidebarRemoveButton(documentId: string) {
+  private async handleClickSidebarRemoveButton(documentId: number) {
     if (window.confirm('페이지를 삭제할까요?')) {
-      await documentApi.removeDocument(parseInt(documentId, 10))
+      await documentApi.removeDocument(documentId)
       const documents = await documentApi.getAllDocument()
       const id = window.location.pathname.replace('/document/', '')
-      if (id === documentId) {
+      if (Number(id) === documentId) {
         Router.navigate('/')
       }
       this.setState({ ...this.state, documents })

@@ -18,7 +18,7 @@ export const makeListHtml = (documents: IDocument[], depth = 1): string => {
   return documents
     .map(
       ({ id, title, documents }) => `
-        <ul class="${depth > 1 ? 'nested' : ''}">
+        <ul class="${depth > 1 ? 'nested' : 'parent-toggle'}">
           <li class="${CLASS_NAME.list} sidebar-component" style="padding-left:${
         15 * depth
       }px" data-document-id="${id}">
