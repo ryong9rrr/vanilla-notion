@@ -4,7 +4,13 @@ import documentApi from './services/document'
 import { ContentPage, NotFoundPage, HomePage } from './pages'
 import { Modal, Sidebar } from './components'
 import './style/index.css'
-import { template } from './App.template'
+
+const template = `
+  <main id="notion-app">
+    <nav id="notion-app-sidebar"></nav>
+    <section id="notion-app-content"></section>
+  </main>
+`
 
 interface State {
   documents: IDocument[]
@@ -31,62 +37,22 @@ export default class App {
 
     this.modalComponent = new Modal({
       parentId: 'body',
-      onSubmit: async ({ title, parentNodeId }) => {
-        const newDocument = await documentApi.postNewDocument({ title, parentNodeId })
-        this.sidebarComponent.setState({
-          documents: await documentApi.getAllDocument(),
-        })
-        Router.navigate(`/document/${newDocument.id}`)
-      },
+      onSubmit: this.handleCreateNewDocument.bind(this),
     })
-
     this.sidebarComponent = new Sidebar({
       parentId: '#notion-app-sidebar',
       initialState: {
         documents: this.state.documents,
       },
-      onAdd: async (documentId?: string, title?: string) => {
-        if (!documentId) {
-          if (window.confirm(`새로운 페이지를 생성할까요?`)) {
-            this.openModal()
-          }
-        } else {
-          if (window.confirm(`${title} 페이지 아래에 하위페이지를 추가할까요?`)) {
-            this.openModal(parseInt(documentId, 10))
-          }
-        }
-      },
-      onRemove: async (documentId?: string, title?: string) => {
-        if (window.confirm(`${title} 페이지를 삭제할까요?`)) {
-          if (documentId) {
-            history.replaceState(null, '', '/')
-            await documentApi.removeDocument(parseInt(documentId, 10))
-          }
-
-          this.sidebarComponent.setState({
-            documents: await documentApi.getAllDocument(),
-          })
-
-          const path = window.location.pathname
-          if (path.indexOf('/document/') === 0) {
-            const [, , prevDocumentId] = path.split('/')
-            if (documentId === prevDocumentId) {
-              Router.navigate('/')
-            }
-          }
-        }
-      },
+      onAdd: this.handleClickSidebarAddButton.bind(this),
+      onRemove: this.handleClickSidebarRemoveButton.bind(this),
     })
 
     this.homePage = new HomePage({ parentId: '#notion-app-content' })
-
     this.contentPage = new ContentPage({
       parentId: '#notion-app-content',
-      onEditing: async ({ id, title, content }: { id: number; title: string; content: string }) => {
-        await this.handleEditing(id.toString(), { title, content })
-      },
+      onEditing: this.handleEditing.bind(this),
     })
-
     this.notFoundPage = new NotFoundPage({ parentId: rootId })
 
     this.fetchDocuments()
@@ -118,7 +84,42 @@ export default class App {
     })
   }
 
-  private async handleSubmit() {}
+  private async handleCreateNewDocument({
+    title,
+    parentNodeId,
+  }: {
+    title: string
+    parentNodeId?: number
+  }) {
+    const newDocument = await documentApi.postNewDocument({ title, parentNodeId })
+    const documents = await documentApi.getAllDocument()
+    this.setState({ ...this.state, documents })
+    Router.navigate(`/document/${newDocument.id}`)
+  }
+
+  private async handleClickSidebarAddButton(documentId?: string, title?: string) {
+    if (!documentId) {
+      if (window.confirm(`새로운 페이지를 생성할까요?`)) {
+        this.openModal()
+      }
+    } else {
+      if (window.confirm(`${title} 페이지 아래에 하위페이지를 추가할까요?`)) {
+        this.openModal(parseInt(documentId, 10))
+      }
+    }
+  }
+
+  private async handleClickSidebarRemoveButton(documentId: string) {
+    if (window.confirm('페이지를 삭제할까요?')) {
+      await documentApi.removeDocument(parseInt(documentId, 10))
+      const documents = await documentApi.getAllDocument()
+      const id = window.location.pathname.replace('/document/', '')
+      if (id === documentId) {
+        Router.navigate('/')
+      }
+      this.setState({ ...this.state, documents })
+    }
+  }
 
   private openModal(documentId?: number) {
     this.modalComponent.setState({
@@ -127,18 +128,22 @@ export default class App {
     })
   }
 
-  private async handleEditing(
-    documentId: string,
-    { title, content }: { title: string; content: string }
-  ) {
+  private async handleEditing({
+    id,
+    title,
+    content,
+  }: {
+    id: number
+    title: string
+    content: string
+  }) {
     if (debounceTimer) {
       clearTimeout(debounceTimer)
     }
     debounceTimer = setTimeout(async () => {
-      await documentApi.editDocument(parseInt(documentId, 10), { title, content })
-      this.sidebarComponent.setState({
-        documents: await documentApi.getAllDocument(),
-      })
+      await documentApi.editDocument(id, { title, content })
+      const documents = await documentApi.getAllDocument()
+      this.setState({ ...this.state, documents })
     }, 2000)
   }
 }

@@ -12,12 +12,12 @@ interface Props {
   parentId: string
   initialState: State
   onAdd?: (documentId?: string, title?: string) => void
-  onRemove?: (documentId?: string, title?: string) => void
+  onRemove: (documentId: string) => void
 }
 
 export default class SideBar extends Component<State> {
   onAdd?: (documentId?: string, title?: string) => void
-  onRemove?: (documentId?: string, title?: string) => void
+  onRemove: (documentId: string) => void
   constructor({ parentId, initialState, onAdd, onRemove }: Props) {
     super({ parentId, initialState })
     this.onAdd = onAdd
@@ -109,7 +109,7 @@ export default class SideBar extends Component<State> {
       const $span = $li.querySelector(`.${CLASS_NAME.title}`) as HTMLSpanElement
       if ($span) {
         const title = $span.textContent || ''
-        this.onRemove && this.onRemove(documentId, title)
+        documentId && this.onRemove(documentId)
       }
     }
   }
