@@ -2,17 +2,14 @@ import './style/index.css'
 import { Modal, Sidebar } from './components'
 import { template } from './App.template'
 import { IDocument } from './models/document'
-import { isNumber } from './utils/constants'
 import documentApi from './services/document'
-import { push, redirect } from './core/router'
 import ContentPage from './pages/Content'
 import NotFoundPage from './pages/NotFound'
 import SideBar from './components/Sidebar'
-import debounce from './utils/debounce' // 이거 디바운스 어떻게 잘사용할 수 있을까
 import HomePage from './pages/Home'
+import Router from './core/router2'
 
 interface State {
-  path: string
   documents: IDocument[]
 }
 
@@ -24,6 +21,7 @@ interface Props {
 let debounceTimer = null as any
 
 export default class App {
+  router = new Router()
   $root: HTMLElement
   rootId: string
   state: State
@@ -45,7 +43,7 @@ export default class App {
         this.sidebarComponent.setState({
           documents: await documentApi.getAllDocument(),
         })
-        push(`/document/${newDocument.id}`)
+        Router.navigate(`/document/${newDocument.id}`)
       },
     })
 
@@ -76,10 +74,11 @@ export default class App {
             documents: await documentApi.getAllDocument(),
           })
 
-          if (this.state.path.indexOf('/document/') === 0) {
-            const [, , prevDocumentId] = this.state.path.split('/')
+          const path = window.location.pathname
+          if (path.indexOf('/document/') === 0) {
+            const [, , prevDocumentId] = path.split('/')
             if (documentId === prevDocumentId) {
-              redirect()
+              Router.navigate('/')
             }
           }
         }
@@ -98,19 +97,17 @@ export default class App {
     this.notFoundPage = new NotFoundPage({ parentId: this.rootId })
   }
 
-  setState(nextState: State) {
-    this.state = nextState
-    this.route()
-  }
-
-  openModal(documentId?: number) {
+  private openModal(documentId?: number) {
     this.modalComponent.setState({
       isView: true,
       parentNodeId: documentId,
     })
   }
 
-  async handleEditing(documentId: string, { title, content }: { title: string; content: string }) {
+  private async handleEditing(
+    documentId: string,
+    { title, content }: { title: string; content: string }
+  ) {
     if (debounceTimer) {
       clearTimeout(debounceTimer)
     }
@@ -122,27 +119,9 @@ export default class App {
     }, 2000)
   }
 
-  async route() {
-    const { path } = this.state
-    this.sidebarComponent.setState({ documents: this.state.documents })
-    const $content = this.$root.querySelector('#notion-app-content') as HTMLElement
-    try {
-      if (path === '/') {
-        this.homePage.setState()
-      } else if (path.includes('/document/')) {
-        $content.innerHTML = ``
-        const [, , documentId] = path.split('/')
-        if (!isNumber(documentId)) throw new Error()
-        const loadedContent = await documentApi.getDocument(parseInt(documentId, 10))
-        this.contentPage.setState({ document: loadedContent })
-      } else {
-        this.notFoundPage.setState()
-      }
-    } catch (e: any) {
-      console.error(
-        `예상치 못한 오류가 발생하여 홈으로 리다이렉트 됩니다. 오류메시지 : ${e.message}`
-      )
-      redirect()
-    }
+  route() {
+    this.router.setDefaultPage(this.homePage)
+    this.router.addRoutePath(/^\/document\/[\w]+\/?$/, this.contentPage)
+    this.router.setNotFoundPage(this.notFoundPage)
   }
 }

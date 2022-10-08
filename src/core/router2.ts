@@ -1,8 +1,10 @@
+import View from './view'
+
 const ROUTE_EVENT_TYPE = 'route-change'
 
 type RouteInfo = {
   path: RegExp
-  page: any
+  page: View<any>
 }
 
 export default class Router {
@@ -18,8 +20,8 @@ export default class Router {
 
   private static instance: Router
   private routeTable: RouteInfo[] = []
-  private defaultPage: any | null = null
-  private notFoundPage: any | null = null
+  private defaultPage: View<any> | null = null
+  private notFoundPage: View<any> | null = null
 
   constructor() {
     if (Router.instance) {
@@ -37,15 +39,15 @@ export default class Router {
     }) as EventListener)
   }
 
-  setDefaultPage(page: any) {
+  setDefaultPage(page: View<any>) {
     this.defaultPage = page
   }
 
-  setNotFoundPage(page: any) {
+  setNotFoundPage(page: View<any>) {
     this.notFoundPage = page
   }
 
-  addRoutePath(path: RegExp, page: any) {
+  addRoutePath(path: RegExp, page: View<any>) {
     this.routeTable.push({ path, page })
   }
 

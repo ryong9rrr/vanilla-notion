@@ -1,10 +1,16 @@
 import { Editor } from '~/components'
+import View from '~/core/view'
 import { Props, State } from './types'
 
-export default class ContentPage {
-  state: State = { document: null }
+const template = () => ``
+
+const initialState: State = {
+  document: null,
+}
+export default class ContentPage extends View<State> {
   Editor: Editor
   constructor({ parentId, onEditing }: Props) {
+    super({ parentId, initialState, template })
     this.Editor = new Editor({ parentId, onEditing })
   }
 
