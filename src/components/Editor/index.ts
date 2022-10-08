@@ -15,7 +15,7 @@ const initialState: State = {
 }
 
 export default class Editor extends Component<State> {
-  onEditing: OnEditing
+  private onEditing: OnEditing
   constructor({ parentId, onEditing }: Props) {
     super({ parentId, initialState, tag: 'div' })
     this.$container.className = 'editor'

@@ -5,8 +5,6 @@ export const CLASS_NAME = {
   addButton: 'sidebar-document-add-button',
   toggleButton: 'sidebar-document-toggle-button',
   removeButton: 'sidebar-document-remove-button',
-  title: 'sidebar-document-list-title',
-  addAndRemoveButton: 'sidebar-add-remove-button',
 } as const
 
 export const makeListHtml = (documents: IDocument[], depth = 1): string => {
@@ -25,7 +23,7 @@ export const makeListHtml = (documents: IDocument[], depth = 1): string => {
         15 * depth
       }px" data-document-id="${id}">
             <span class="${CLASS_NAME.toggleButton} caret"></span>
-            <span class="${CLASS_NAME.title}">${title}</span>
+            <h4 class="${CLASS_NAME.list}">${title}</h4>
             <button class="${CLASS_NAME.removeButton} sidebar-add-remove-button">삭제</button>
             <button class="${CLASS_NAME.addButton} sidebar-add-remove-button">추가</button>
           </li>

@@ -16,7 +16,7 @@ const initialState: State = {
 }
 
 export default class Modal extends Component<State> {
-  onSubmit: OnSubmit
+  private onSubmit: OnSubmit
   constructor({ parentId, onSubmit }: Props) {
     super({ parentId, initialState })
     this.$container.className = 'modal'
@@ -41,7 +41,7 @@ export default class Modal extends Component<State> {
   `
   }
 
-  componentDidUpdate() {
+  protected componentDidUpdate() {
     if (this.state.isView) {
       const input = this.$container.querySelector('input[name=title]') as HTMLInputElement
       input.focus()

@@ -29,7 +29,7 @@ export default abstract class Component<T> {
     }
   }
 
-  render() {
+  private render() {
     this.mount()
     this.componentDidMount()
   }
