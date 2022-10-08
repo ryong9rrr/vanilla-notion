@@ -8,7 +8,9 @@ export default class NotFoundPage {
   parentId: string
   constructor({ parentId }: Props) {
     this.parentId = parentId
+  }
 
+  setState() {
     this.render()
   }
 

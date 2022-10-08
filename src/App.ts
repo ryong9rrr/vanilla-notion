@@ -1,6 +1,6 @@
 import './style/index.css'
 import { Modal, Sidebar } from './components'
-import { README, template } from './App.template'
+import { template } from './App.template'
 import { IDocument } from './models/document'
 import { isNumber } from './utils/constants'
 import documentApi from './services/document'
@@ -9,6 +9,7 @@ import ContentPage from './pages/Content'
 import NotFoundPage from './pages/NotFound'
 import SideBar from './components/Sidebar'
 import debounce from './utils/debounce' // 이거 디바운스 어떻게 잘사용할 수 있을까
+import HomePage from './pages/Home'
 
 interface State {
   path: string
@@ -28,7 +29,9 @@ export default class App {
   state: State
   modalComponent: Modal
   sidebarComponent: SideBar
+  homePage: HomePage
   contentPage: ContentPage
+  notFoundPage: NotFoundPage
   constructor({ rootId, initialState }: Props) {
     this.$root = document.querySelector(rootId) as HTMLElement
     this.rootId = rootId
@@ -83,12 +86,16 @@ export default class App {
       },
     })
 
+    this.homePage = new HomePage({ parentId: '#notion-app-content' })
+
     this.contentPage = new ContentPage({
       parentId: '#notion-app-content',
       onEditing: async ({ id, title, content }: { id: number; title: string; content: string }) => {
         await this.handleEditing(id.toString(), { title, content })
       },
     })
+
+    this.notFoundPage = new NotFoundPage({ parentId: this.rootId })
   }
 
   setState(nextState: State) {
@@ -121,7 +128,7 @@ export default class App {
     const $content = this.$root.querySelector('#notion-app-content') as HTMLElement
     try {
       if (path === '/') {
-        $content.innerHTML = README
+        this.homePage.setState()
       } else if (path.includes('/document/')) {
         $content.innerHTML = ``
         const [, , documentId] = path.split('/')
@@ -129,7 +136,7 @@ export default class App {
         const loadedContent = await documentApi.getDocument(parseInt(documentId, 10))
         this.contentPage.setState({ document: loadedContent })
       } else {
-        new NotFoundPage({ parentId: this.rootId })
+        this.notFoundPage.setState()
       }
     } catch (e: any) {
       console.error(
