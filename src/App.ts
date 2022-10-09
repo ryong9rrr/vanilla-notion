@@ -1,19 +1,10 @@
-import { IDocument } from './models/document'
+import './style/index.css'
 import Router from './core/router'
 import documentApi from './services/document'
 import { ContentPage, NotFoundPage, HomePage } from './pages'
 import { Modal, Sidebar } from './components'
-import './style/index.css'
 import template from './App.template'
-
-interface State {
-  documents: IDocument[]
-}
-
-interface Props {
-  root: HTMLElement
-  initialState: State
-}
+import { Props, State } from './App.types'
 
 let debounceTimer = null as any
 
