@@ -5,19 +5,12 @@ import { ContentPage, NotFoundPage, HomePage } from './pages'
 import { Modal, Sidebar } from './components'
 import './style/index.css'
 
-const template = `
-  <main id="notion-app">
-    <nav id="notion-app-sidebar"></nav>
-    <section id="notion-app-content"></section>
-  </main>
-`
-
 interface State {
   documents: IDocument[]
 }
 
 interface Props {
-  rootId: string
+  root: HTMLElement
   initialState: State
 }
 
@@ -31,8 +24,8 @@ export default class App {
   homePage: HomePage
   contentPage: ContentPage
   notFoundPage: NotFoundPage
-  constructor({ rootId, initialState }: Props) {
-    this.mount(rootId)
+  constructor({ root, initialState }: Props) {
+    root.innerHTML = this.template()
     this.state = initialState
 
     this.modalComponent = new Modal({
@@ -48,12 +41,16 @@ export default class App {
       onRemove: this.handleClickSidebarRemoveButton.bind(this),
     })
 
-    this.homePage = new HomePage({ parentId: '#notion-app-content' })
+    this.homePage = new HomePage({
+      parentElement: document.querySelector('#notion-app-content') as HTMLElement,
+    })
+
     this.contentPage = new ContentPage({
-      parentId: '#notion-app-content',
+      parentElement: document.querySelector('#notion-app-content') as HTMLElement,
       onEditing: this.handleEditing.bind(this),
     })
-    this.notFoundPage = new NotFoundPage({ parentId: rootId })
+
+    this.notFoundPage = new NotFoundPage({ parentElement: root })
 
     this.fetchDocuments()
   }
@@ -64,9 +61,13 @@ export default class App {
     this.router.setNotFoundPage(this.notFoundPage)
   }
 
-  private mount(rootId: string) {
-    const $root = document.querySelector(rootId) as HTMLElement
-    $root.innerHTML = template
+  private template() {
+    return `
+      <main id="notion-app">
+        <nav id="notion-app-sidebar"></nav>
+        <section id="notion-app-content"></section>
+      </main>
+      `
   }
 
   private setState(nextState: State) {

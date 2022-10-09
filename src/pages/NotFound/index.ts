@@ -1,12 +1,12 @@
 import View from '~/core/view'
 
 interface Props {
-  parentId: string
+  parentElement: HTMLElement
 }
 
 export default class NotFoundPage extends View {
-  constructor({ parentId }: Props) {
-    super({ parentId })
+  constructor({ parentElement }: Props) {
+    super({ parentElement })
   }
 
   template(): string {

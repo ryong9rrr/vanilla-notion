@@ -13,7 +13,10 @@ export default abstract class Component<T> {
   element: HTMLElement
 
   constructor({ parentElement, tag, initialState }: Props<T>) {
-    this.parentElement = parentElement as HTMLElement
+    this.parentElement = parentElement
+    if (!this.parentElement) {
+      throw new Error(`${this.parentElement}가 존재하지 않아요.`)
+    }
     this.element = tag ? document.createElement(tag) : document.createElement('div')
     this._state = initialState
     this.prevState = JSON.stringify(this._state)
