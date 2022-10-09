@@ -1,39 +1,17 @@
 import Component from '~/core/component'
 import Router from '~/core/router'
-import { IDocument } from '~/models/document'
+import { Props, State } from './types'
+import template from './template'
 import SidebarList from './SidebarList'
-
-type State = {
-  documents: IDocument[]
-}
-
-interface Props {
-  parentElement: HTMLElement
-  initialState: State
-  onAdd: (documentId?: number, title?: string) => void
-  onRemove: (documentId: number, title: string) => void
-}
 
 export default class Sidebar extends Component<State> {
   private onAdd: (documentId?: number, title?: string) => void
   private onRemove: (documentId: number, title: string) => void
   constructor({ parentElement, initialState, onAdd, onRemove }: Props) {
-    super({ parentElement, initialState })
+    super({ parentElement, initialState, template })
     this.onAdd = onAdd
     this.onRemove = onRemove
     this.attachEventHandler('click', this.handleClickEvents)
-  }
-
-  template(state: State): string {
-    return `
-      <header id="sidebar-header" class="sidebar-component">
-        📔 상윤의 notion
-      </header>
-      <div id="sidebars"></div>
-      <div id="root-add-button" class="sidebar-component">
-        + 새 페이지
-      </div>
-    `
   }
 
   protected componentDidUpdate() {

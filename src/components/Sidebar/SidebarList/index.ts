@@ -1,46 +1,18 @@
 import Component from '~/core/component'
 import Router from '~/core/router'
-import { IDocument } from '~/models/document'
-import { pad } from '~/utils/constants'
-import LastNode from './LastNode'
-
-type State = {
-  isParentSpread: boolean
-  isSpread: boolean
-  document: IDocument
-  subDocuments: IDocument[]
-  depth: number
-}
-
-interface Props {
-  parentElement: HTMLElement
-  initialState: State
-  onAdd: (documentId: number, title: string) => void
-  onRemove: (documentId: number, title: string) => void
-}
+import { Props, State } from './types'
+import template from './template'
+import LastNode from '../LastNode'
 
 export default class SidebarList extends Component<State> {
   onAdd: (documentId: number, title: string) => void
   onRemove: (documentId: number, title: string) => void
   constructor({ parentElement, initialState, onAdd, onRemove }: Props) {
-    super({ parentElement, initialState })
+    super({ parentElement, initialState, template })
     this.element.classList.add('sidebar-list')
     this.onAdd = onAdd
     this.onRemove = onRemove
     this.attachEventHandler('click', this.handleClickEvents)
-  }
-
-  template(state: State): string {
-    if (!state.isParentSpread) return ''
-    return `
-      <div style="margin-left:${state.depth * 15}px">
-        <button class="toggle">${!state.isSpread ? '▶︎' : '▼'}</button>
-        <h4 class="title">${pad(state.document.title)}</h4>
-        <button class="remove">🗑</button>
-        <button class="add">+</button>
-      </div>
-      <div class="sub-components"></div>
-    `
   }
 
   protected componentDidUpdate() {

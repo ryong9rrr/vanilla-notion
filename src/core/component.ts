@@ -1,24 +1,29 @@
 type EventHandler = (e: Event) => void
 
+type Template<T> = (state: T) => string
+
 type Props<T> = {
   parentElement: HTMLElement
-  tag?: string
   initialState: T
+  template: Template<T>
+  tag?: string
 }
 
 export default abstract class Component<T> {
   private _state: T
   private prevState: string
+  private template: Template<T>
   parentElement: HTMLElement
   element: HTMLElement
 
-  constructor({ parentElement, tag, initialState }: Props<T>) {
+  constructor({ parentElement, initialState, template, tag }: Props<T>) {
     this.parentElement = parentElement
     if (!this.parentElement) {
       throw new Error(`${this.parentElement}가 존재하지 않아요.`)
     }
     this.element = tag ? document.createElement(tag) : document.createElement('div')
     this._state = initialState
+    this.template = template
     this.prevState = JSON.stringify(this._state)
 
     this.render()
@@ -70,6 +75,4 @@ export default abstract class Component<T> {
     }
     return false
   }
-
-  abstract template(state: T): string
 }

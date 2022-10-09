@@ -4,6 +4,7 @@ import documentApi from './services/document'
 import { ContentPage, NotFoundPage, HomePage } from './pages'
 import { Modal, Sidebar } from './components'
 import './style/index.css'
+import template from './App.template'
 
 interface State {
   documents: IDocument[]
@@ -61,14 +62,7 @@ export default class App {
     this.router.setNotFoundPage(this.notFoundPage)
   }
 
-  private template() {
-    return `
-      <main id="notion-app">
-        <nav id="notion-app-sidebar"></nav>
-        <section id="notion-app-content"></section>
-      </main>
-      `
-  }
+  private template = template
 
   private setState(nextState: State) {
     this.state = nextState
