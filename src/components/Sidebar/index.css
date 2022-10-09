@@ -21,6 +21,7 @@
 
 #sidebars {
   box-sizing: border-box;
+  padding: 5px;
 }
 
 .sub-components {
@@ -35,12 +36,7 @@
 
 .sidebar-list div {
   display: flex;
-  font-size: 16px;
-}
-
-.sidebar-list button {
-  all: unset;
-  cursor: pointer;
+  font-size: 17px;
 }
 
 .sidebar-list .toggle {
@@ -55,5 +51,22 @@
 }
 
 .sidebar-list > div > .title:hover {
+  background-color: #dad9d6;
+}
+
+.toggle {
+  all: unset;
+}
+
+.add,
+.remove {
+  border: none;
+  margin-left: 3px;
+  padding: 0 3px;
+  background-color: inherit;
+}
+
+.add:hover,
+.remove:hover {
   background-color: #dad9d6;
 }

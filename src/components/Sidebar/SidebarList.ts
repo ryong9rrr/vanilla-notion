@@ -1,6 +1,7 @@
 import Component from '~/core/component'
 import Router from '~/core/router'
 import { IDocument } from '~/models/document'
+import { pad } from '~/utils/constants'
 import LastNode from './LastNode'
 
 type State = {
@@ -34,41 +35,16 @@ export default class SidebarList extends Component<State> {
     return `
       <div style="margin-left:${state.depth * 15}px">
         <button class="toggle">${!state.isSpread ? '▶︎' : '▼'}</button>
-        <h4 class="title">${state.document.title}</h4>
-        <button class="add">추가</button>
-        <button class="remove">삭제</button>
+        <h4 class="title">${pad(state.document.title)}</h4>
+        <button class="remove">🗑</button>
+        <button class="add">+</button>
       </div>
       <div class="sub-components"></div>
     `
   }
 
   protected componentDidUpdate() {
-    if (this.state.subDocuments.length > 0) {
-      this.state.subDocuments.map((document) => {
-        const $div = window.document.createElement('div')
-        new SidebarList({
-          parentElement: $div,
-          initialState: {
-            isParentSpread: this.state.isSpread,
-            isSpread: false,
-            document,
-            subDocuments: document.documents,
-            depth: this.state.depth + 1,
-          },
-          onAdd: this.onAdd.bind(this),
-          onRemove: this.onRemove.bind(this),
-        })
-        ;(this.element.querySelector('.sub-components') as HTMLElement).appendChild($div)
-      })
-    } else {
-      new LastNode({
-        parentElement: this.element,
-        initialState: {
-          isParentSpread: this.state.isSpread,
-          depth: this.state.depth + 1,
-        },
-      })
-    }
+    this.renderSubSidebars()
   }
 
   private handleClickEvents(e: Event) {
@@ -114,5 +90,34 @@ export default class SidebarList extends Component<State> {
       ...this.state,
       isSpread: !this.state.isSpread,
     })
+  }
+
+  private renderSubSidebars() {
+    if (this.state.subDocuments.length > 0) {
+      this.state.subDocuments.map((document) => {
+        const $div = window.document.createElement('div')
+        new SidebarList({
+          parentElement: $div,
+          initialState: {
+            isParentSpread: this.state.isSpread,
+            isSpread: false,
+            document,
+            subDocuments: document.documents,
+            depth: this.state.depth + 1,
+          },
+          onAdd: this.onAdd.bind(this),
+          onRemove: this.onRemove.bind(this),
+        })
+        ;(this.element.querySelector('.sub-components') as HTMLElement).appendChild($div)
+      })
+    } else {
+      new LastNode({
+        parentElement: this.element,
+        initialState: {
+          isParentSpread: this.state.isSpread,
+          depth: this.state.depth + 1,
+        },
+      })
+    }
   }
 }

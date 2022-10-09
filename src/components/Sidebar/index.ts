@@ -37,6 +37,10 @@ export default class Sidebar extends Component<State> {
   }
 
   protected componentDidUpdate() {
+    this.renderSidebars()
+  }
+
+  private renderSidebars() {
     this.state.documents.map((document) => {
       const $div = window.document.createElement('div')
       new SidebarList({
