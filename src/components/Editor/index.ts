@@ -6,7 +6,7 @@ type State = {
 }
 
 interface Props {
-  parentId: string
+  parentElement: HTMLElement
   onEditing: OnEditing
 }
 
@@ -16,9 +16,9 @@ const initialState: State = {
 
 export default class Editor extends Component<State> {
   private onEditing: OnEditing
-  constructor({ parentId, onEditing }: Props) {
-    super({ parentId, initialState, tag: 'div' })
-    this.$container.className = 'editor'
+  constructor({ parentElement, onEditing }: Props) {
+    super({ parentElement, initialState, tag: 'div' })
+    this.element.className = 'editor'
     this.onEditing = onEditing
     this.attachEventHandler('keyup', this.handleKeyup)
   }

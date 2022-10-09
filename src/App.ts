@@ -36,11 +36,11 @@ export default class App {
     this.state = initialState
 
     this.modalComponent = new Modal({
-      parentId: 'body',
+      parentElement: document.querySelector('body') as HTMLElement,
       onSubmit: this.handleCreateNewDocument.bind(this),
     })
     this.sidebarComponent = new Sidebar({
-      parentId: '#notion-app-sidebar',
+      parentElement: document.querySelector('#notion-app-sidebar') as HTMLElement,
       initialState: {
         documents: this.state.documents,
       },
@@ -109,8 +109,8 @@ export default class App {
     }
   }
 
-  private async handleClickSidebarRemoveButton(documentId: number) {
-    if (window.confirm('페이지를 삭제할까요?')) {
+  private async handleClickSidebarRemoveButton(documentId: number, title: string) {
+    if (window.confirm(`${title} 페이지를 삭제할까요?`)) {
       await documentApi.removeDocument(documentId)
       const documents = await documentApi.getAllDocument()
       const id = window.location.pathname.replace('/document/', '')

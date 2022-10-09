@@ -1,20 +1,20 @@
 type EventHandler = (e: Event) => void
 
 type Props<T> = {
-  parentId: string
+  parentElement: HTMLElement
   tag?: string
   initialState: T
 }
 
 export default abstract class Component<T> {
+  private _state: T
   private prevState: string
-  parentId: string
-  $container: HTMLElement
-  _state: T
+  parentElement: HTMLElement
+  element: HTMLElement
 
-  constructor({ parentId, tag, initialState }: Props<T>) {
-    this.parentId = parentId
-    this.$container = tag ? document.createElement(tag) : document.createElement('div')
+  constructor({ parentElement, tag, initialState }: Props<T>) {
+    this.parentElement = parentElement as HTMLElement
+    this.element = tag ? document.createElement(tag) : document.createElement('div')
     this._state = initialState
     this.prevState = JSON.stringify(this._state)
 
@@ -37,8 +37,8 @@ export default abstract class Component<T> {
     }
   }
 
-  private render(append = true) {
-    this.mount(append)
+  private render() {
+    this.mount()
     this.componentDidMount()
   }
 
@@ -47,19 +47,16 @@ export default abstract class Component<T> {
   protected componentDidUpdate() {}
 
   protected attachEventHandler(eventType: string, eventHandler: EventHandler): void {
-    if (!this.$container) {
+    if (!this.element) {
       console.error('엘리먼트가 존재하지 않아요.')
       return
     }
-    this.$container.addEventListener(eventType, eventHandler.bind(this))
+    this.element.addEventListener(eventType, eventHandler.bind(this))
   }
 
-  private mount(append: boolean) {
-    const $parentElement = document.querySelector(this.parentId) as HTMLElement
-    if (append) {
-      $parentElement.appendChild(this.$container)
-    }
-    this.$container.innerHTML = this.template(this._state)
+  private mount() {
+    this.parentElement.appendChild(this.element)
+    this.element.innerHTML = this.template(this._state)
   }
 
   private isDiff(state: T) {

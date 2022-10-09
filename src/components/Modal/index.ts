@@ -7,7 +7,7 @@ type State = {
 }
 
 interface Props {
-  parentId: string
+  parentElement: HTMLElement
   onSubmit: OnSubmit
 }
 
@@ -17,9 +17,9 @@ const initialState: State = {
 
 export default class Modal extends Component<State> {
   private onSubmit: OnSubmit
-  constructor({ parentId, onSubmit }: Props) {
-    super({ parentId, initialState })
-    this.$container.className = 'modal'
+  constructor({ parentElement, onSubmit }: Props) {
+    super({ parentElement, initialState })
+    this.element.className = 'modal'
     this.onSubmit = onSubmit
     this.attachEventHandler('click', this.handleCloseModal)
   }
@@ -43,7 +43,7 @@ export default class Modal extends Component<State> {
 
   protected componentDidUpdate() {
     if (this.state.isView) {
-      const input = this.$container.querySelector('input[name=title]') as HTMLInputElement
+      const input = this.element.querySelector('input[name=title]') as HTMLInputElement
       input.focus()
     }
   }
@@ -53,7 +53,7 @@ export default class Modal extends Component<State> {
     if ($target && !$target.classList.contains('modal-wrapper')) {
       return
     }
-    const $input = this.$container.querySelector('input') as HTMLInputElement
+    const $input = this.element.querySelector('input') as HTMLInputElement
     const title = $input.value
     if (title) {
       this.onSubmit({
