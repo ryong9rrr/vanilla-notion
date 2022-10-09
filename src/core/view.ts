@@ -1,12 +1,15 @@
 interface Props {
-  parentId: string
+  parentElement: HTMLElement
 }
 
 export default abstract class View {
-  protected parentId: string
+  protected parentElement: HTMLElement
 
-  constructor({ parentId }: Props) {
-    this.parentId = parentId
+  constructor({ parentElement }: Props) {
+    if (!parentElement) {
+      throw new Error(`${parentElement}가 존재하지 않아요.`)
+    }
+    this.parentElement = parentElement
   }
 
   render() {
@@ -17,8 +20,7 @@ export default abstract class View {
   protected componentDidMount() {}
 
   private mount() {
-    const $parentElement = document.querySelector(this.parentId) as HTMLElement
-    $parentElement.innerHTML = this.template()
+    this.parentElement.innerHTML = this.template()
   }
 
   abstract template(): string

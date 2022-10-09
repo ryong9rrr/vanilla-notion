@@ -1,25 +1,10 @@
-import { IDocument } from './models/document'
+import './style/index.css'
 import Router from './core/router'
 import documentApi from './services/document'
 import { ContentPage, NotFoundPage, HomePage } from './pages'
 import { Modal, Sidebar } from './components'
-import './style/index.css'
-
-const template = `
-  <main id="notion-app">
-    <nav id="notion-app-sidebar"></nav>
-    <section id="notion-app-content"></section>
-  </main>
-`
-
-interface State {
-  documents: IDocument[]
-}
-
-interface Props {
-  rootId: string
-  initialState: State
-}
+import template from './App.template'
+import { Props, State } from './App.types'
 
 let debounceTimer = null as any
 
@@ -31,16 +16,16 @@ export default class App {
   homePage: HomePage
   contentPage: ContentPage
   notFoundPage: NotFoundPage
-  constructor({ rootId, initialState }: Props) {
-    this.mount(rootId)
+  constructor({ root, initialState }: Props) {
+    root.innerHTML = this.template()
     this.state = initialState
 
     this.modalComponent = new Modal({
-      parentId: 'body',
+      parentElement: document.querySelector('body') as HTMLElement,
       onSubmit: this.handleCreateNewDocument.bind(this),
     })
     this.sidebarComponent = new Sidebar({
-      parentId: '#notion-app-sidebar',
+      parentElement: document.querySelector('#notion-app-sidebar') as HTMLElement,
       initialState: {
         documents: this.state.documents,
       },
@@ -48,12 +33,16 @@ export default class App {
       onRemove: this.handleClickSidebarRemoveButton.bind(this),
     })
 
-    this.homePage = new HomePage({ parentId: '#notion-app-content' })
+    this.homePage = new HomePage({
+      parentElement: document.querySelector('#notion-app-content') as HTMLElement,
+    })
+
     this.contentPage = new ContentPage({
-      parentId: '#notion-app-content',
+      parentElement: document.querySelector('#notion-app-content') as HTMLElement,
       onEditing: this.handleEditing.bind(this),
     })
-    this.notFoundPage = new NotFoundPage({ parentId: rootId })
+
+    this.notFoundPage = new NotFoundPage({ parentElement: root })
 
     this.fetchDocuments()
   }
@@ -64,10 +53,7 @@ export default class App {
     this.router.setNotFoundPage(this.notFoundPage)
   }
 
-  private mount(rootId: string) {
-    const $root = document.querySelector(rootId) as HTMLElement
-    $root.innerHTML = template
-  }
+  private template = template
 
   private setState(nextState: State) {
     this.state = nextState
@@ -97,24 +83,24 @@ export default class App {
     Router.navigate(`/document/${newDocument.id}`)
   }
 
-  private async handleClickSidebarAddButton(documentId?: string, title?: string) {
+  private async handleClickSidebarAddButton(documentId?: number, title?: string) {
     if (!documentId) {
       if (window.confirm(`새로운 페이지를 생성할까요?`)) {
         this.openModal()
       }
     } else {
       if (window.confirm(`${title} 페이지 아래에 하위페이지를 추가할까요?`)) {
-        this.openModal(parseInt(documentId, 10))
+        this.openModal(documentId)
       }
     }
   }
 
-  private async handleClickSidebarRemoveButton(documentId: string) {
-    if (window.confirm('페이지를 삭제할까요?')) {
-      await documentApi.removeDocument(parseInt(documentId, 10))
+  private async handleClickSidebarRemoveButton(documentId: number, title: string) {
+    if (window.confirm(`${title} 페이지를 삭제할까요?`)) {
+      await documentApi.removeDocument(documentId)
       const documents = await documentApi.getAllDocument()
       const id = window.location.pathname.replace('/document/', '')
-      if (id === documentId) {
+      if (Number(id) === documentId) {
         Router.navigate('/')
       }
       this.setState({ ...this.state, documents })

@@ -5,15 +5,18 @@ import { OnEditing } from '~/models/document'
 import documentApi from '~/services/document'
 
 interface Props {
-  parentId: string
+  parentElement: HTMLElement
   onEditing: OnEditing
 }
 
 export default class ContentPage extends View {
   private Editor: Editor
-  constructor({ parentId, onEditing }: Props) {
-    super({ parentId })
-    this.Editor = new Editor({ parentId, onEditing })
+  constructor({ parentElement, onEditing }: Props) {
+    super({ parentElement })
+    this.Editor = new Editor({
+      parentElement,
+      onEditing,
+    })
   }
 
   template(): string {

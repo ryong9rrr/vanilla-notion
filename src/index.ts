@@ -1,7 +1,7 @@
 import App from './App'
 
 const app = new App({
-  rootId: '#root',
+  root: document.querySelector('#root') as HTMLElement,
   initialState: {
     documents: [],
   },

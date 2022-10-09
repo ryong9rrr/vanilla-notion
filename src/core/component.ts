@@ -1,35 +1,51 @@
-type Handler = (e: Event) => void
+type EventHandler = (e: Event) => void
+
+type Template<T> = (state: T) => string
 
 type Props<T> = {
-  parentId: string
-  tag?: string
+  parentElement: HTMLElement
   initialState: T
+  template: Template<T>
+  tag?: string
 }
 
 export default abstract class Component<T> {
+  private _state: T
   private prevState: string
-  parentId: string
-  $container: HTMLElement
-  state: T
+  private template: Template<T>
+  parentElement: HTMLElement
+  element: HTMLElement
 
-  constructor({ parentId, tag, initialState }: Props<T>) {
-    this.parentId = parentId
-    this.$container = tag ? document.createElement(tag) : document.createElement('div')
-    this.state = initialState
-    this.prevState = JSON.stringify(this.state)
+  constructor({ parentElement, initialState, template, tag }: Props<T>) {
+    this.parentElement = parentElement
+    if (!this.parentElement) {
+      throw new Error(`${this.parentElement}가 존재하지 않아요.`)
+    }
+    this.element = tag ? document.createElement(tag) : document.createElement('div')
+    this._state = initialState
+    this.template = template
+    this.prevState = JSON.stringify(this._state)
 
     this.render()
   }
 
+  get state() {
+    return this._state
+  }
+
+  set state(nextState: T) {
+    throw new SyntaxError('직접 state를 변경하지말고 setState 메서드를 이용하세요.')
+  }
+
   setState(nextState: T) {
     if (this.isDiff(nextState)) {
-      this.state = nextState
+      this._state = nextState
       this.render()
       this.componentDidUpdate()
     }
   }
 
-  render() {
+  private render() {
     this.mount()
     this.componentDidMount()
   }
@@ -38,18 +54,17 @@ export default abstract class Component<T> {
 
   protected componentDidUpdate() {}
 
-  protected attachEventHandler(eventType: string, handler: Handler): void {
-    if (!this.$container) {
+  protected attachEventHandler(eventType: string, eventHandler: EventHandler): void {
+    if (!this.element) {
       console.error('엘리먼트가 존재하지 않아요.')
-    } else {
-      this.$container.addEventListener(eventType, handler.bind(this))
+      return
     }
+    this.element.addEventListener(eventType, eventHandler.bind(this))
   }
 
   private mount() {
-    const $parentElement = document.querySelector(this.parentId) as HTMLElement
-    $parentElement.appendChild(this.$container)
-    this.$container.innerHTML = this.template(this.state)
+    this.parentElement.appendChild(this.element)
+    this.element.innerHTML = this.template(this._state)
   }
 
   private isDiff(state: T) {
@@ -60,6 +75,4 @@ export default abstract class Component<T> {
     }
     return false
   }
-
-  abstract template(state: T): string
 }

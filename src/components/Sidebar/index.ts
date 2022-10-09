@@ -1,75 +1,50 @@
 import Component from '~/core/component'
-import { CLASS_NAME, makeListHtml } from './template'
-import { attachToggleEventHandler, hasClassName } from '~/utils/toggle'
 import Router from '~/core/router'
-import { IDocument } from '~/models/document'
+import { Props, State } from './types'
+import template from './template'
+import SidebarList from './SidebarList'
 
-type State = {
-  documents: IDocument[]
-}
-
-interface Props {
-  parentId: string
-  initialState: State
-  onAdd?: (documentId?: string, title?: string) => void
-  onRemove: (documentId: string) => void
-}
-
-export default class SideBar extends Component<State> {
-  onAdd?: (documentId?: string, title?: string) => void
-  onRemove: (documentId: string) => void
-  constructor({ parentId, initialState, onAdd, onRemove }: Props) {
-    super({ parentId, initialState })
+export default class Sidebar extends Component<State> {
+  private onAdd: (documentId?: number, title?: string) => void
+  private onRemove: (documentId: number, title: string) => void
+  constructor({ parentElement, initialState, onAdd, onRemove }: Props) {
+    super({ parentElement, initialState, template })
     this.onAdd = onAdd
     this.onRemove = onRemove
     this.attachEventHandler('click', this.handleClickEvents)
   }
 
-  template(state: State): string {
-    return `
-      <header id="sidebar-header" class="sidebar-component">
-        📔 상윤의 notion
-      </header>
-      <div id="sidebar-list">
-        ${makeListHtml(state.documents)}
-      </div>
-      <div id="root-add-button" class="sidebar-component">
-        + 새 페이지
-      </div>
-    `
+  protected componentDidUpdate() {
+    this.renderSidebars()
+  }
+
+  private renderSidebars() {
+    this.state.documents.map((document) => {
+      const $div = window.document.createElement('div')
+      new SidebarList({
+        parentElement: $div as HTMLElement,
+        initialState: {
+          isParentSpread: true,
+          isSpread: false,
+          document,
+          subDocuments: document.documents,
+          depth: 0,
+        },
+        onAdd: this.onAdd.bind(this),
+        onRemove: this.onRemove.bind(this),
+      })
+      ;(this.element.querySelector('#sidebars') as HTMLElement).appendChild($div)
+    })
   }
 
   private handleClickEvents(e: Event) {
     const $target = e.target as HTMLElement
-
     if ($target.id === 'sidebar-header') {
       this.handleClickSidebarHeader()
       return
     }
-
     if ($target.id === 'root-add-button') {
       this.handleClickCreateRootDocument()
-      return
-    }
-
-    if (hasClassName($target, CLASS_NAME.title)) {
-      this.handleClickSidebarList($target)
-      return
-    }
-
-    if (hasClassName($target, CLASS_NAME.addButton)) {
-      this.handleClickCreateChildDocument($target)
-      return
-    }
-
-    if (hasClassName($target, CLASS_NAME.removeButton)) {
-      this.handleClickRemoveButton($target)
-      return
-    }
-
-    // 이렇게 하면 클릭이 잘 안되고 이벤트가 너무 많이 일어난다.
-    if ($target.getElementsByClassName('caret')) {
-      attachToggleEventHandler(this.$container)
       return
     }
   }
@@ -79,38 +54,6 @@ export default class SideBar extends Component<State> {
   }
 
   private handleClickCreateRootDocument() {
-    this.onAdd && this.onAdd()
-  }
-
-  private handleClickSidebarList($target: HTMLElement) {
-    const $li = $target.closest('li') as HTMLLIElement
-    if ($li) {
-      const { documentId } = $li.dataset
-      Router.navigate(`/document/${documentId}`)
-    }
-  }
-
-  private handleClickCreateChildDocument($target: HTMLElement) {
-    const $li = $target.closest('li') as HTMLLIElement
-    if ($li) {
-      const { documentId } = $li.dataset
-      const $span = $li.querySelector(`.${CLASS_NAME.title}`) as HTMLSpanElement
-      if ($span) {
-        const title = $span.textContent || ''
-        this.onAdd && this.onAdd(documentId, title)
-      }
-    }
-  }
-
-  private handleClickRemoveButton($target: HTMLElement) {
-    const $li = $target.closest('li') as HTMLLIElement
-    if ($li) {
-      const { documentId } = $li.dataset
-      const $span = $li.querySelector(`.${CLASS_NAME.title}`) as HTMLSpanElement
-      if ($span) {
-        const title = $span.textContent || ''
-        documentId && this.onRemove(documentId)
-      }
-    }
+    this.onAdd()
   }
 }

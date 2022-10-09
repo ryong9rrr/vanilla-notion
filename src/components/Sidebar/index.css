@@ -3,37 +3,6 @@
   padding: 2rem;
 }
 
-.sidebar-component:hover {
-  background-color: #dad9d6;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.sidebar-document-list,
-.sidebar-document-list-last {
-  padding: 0.5rem;
-}
-
-.sidebar-document-list {
-  display: flex;
-  align-items: center;
-}
-
-.sidebar-document-list-last {
-  font-size: 1.4rem;
-}
-
-.sidebar-document-toggle-button {
-  text-align: center;
-  border-radius: 3px;
-  padding: 0px 2px;
-}
-
-.sidebar-document-toggle-button:hover {
-  cursor: pointer;
-  background-color: #cdccc8;
-}
-
 #root-add-button {
   box-sizing: border-box;
   position: absolute;
@@ -42,4 +11,62 @@
   padding: 20px;
   width: 100%;
   border-top: 0.5px solid gray;
+}
+
+.sidebar-component:hover {
+  background-color: #dad9d6;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+#sidebars {
+  box-sizing: border-box;
+  padding: 5px;
+}
+
+.sub-components {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-list div {
+  display: flex;
+  font-size: 17px;
+}
+
+.sidebar-list .toggle {
+  margin-right: 3px;
+}
+
+.sidebar-list,
+.sidebar-list > div > .title {
+  font-weight: 500;
+  flex: 1;
+  cursor: pointer;
+}
+
+.sidebar-list > div > .title:hover {
+  background-color: #dad9d6;
+}
+
+.toggle {
+  all: unset;
+}
+
+.add,
+.remove {
+  border: none;
+  margin-left: 3px;
+  padding: 0 3px;
+  background-color: inherit;
+}
+
+.add:hover,
+.remove:hover {
+  background-color: #dad9d6;
 }
