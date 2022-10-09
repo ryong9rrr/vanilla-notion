@@ -1,33 +1,27 @@
 import Component from '~/core/component'
 import Router from '~/core/router'
 import { IDocument } from '~/models/document'
-import SidebarList from '../SidebarList'
+import SidebarList from './SidebarList'
 
 type State = {
   documents: IDocument[]
 }
 
 interface Props {
-  parentId: string
+  parentElement: HTMLElement
   initialState: State
-  onAdd: (documentId?: string, title?: string) => void
-  onRemove: (documentId: string) => void
+  onAdd: (documentId?: number, title?: string) => void
+  onRemove: (documentId: number, title: string) => void
 }
 
 export default class Sidebar extends Component<State> {
-  private SidebarList: SidebarList
-  private onAdd: (documentId?: string, title?: string) => void
-  constructor({ parentId, initialState, onAdd, onRemove }: Props) {
-    super({ parentId, initialState })
+  private onAdd: (documentId?: number, title?: string) => void
+  private onRemove: (documentId: number, title: string) => void
+  constructor({ parentElement, initialState, onAdd, onRemove }: Props) {
+    super({ parentElement, initialState })
     this.onAdd = onAdd
+    this.onRemove = onRemove
     this.attachEventHandler('click', this.handleClickEvents)
-
-    this.SidebarList = new SidebarList({
-      parentId: '#sidebar-list',
-      initialState,
-      onAdd,
-      onRemove,
-    })
   }
 
   template(state: State): string {
@@ -35,17 +29,29 @@ export default class Sidebar extends Component<State> {
       <header id="sidebar-header" class="sidebar-component">
         📔 상윤의 notion
       </header>
-      <div id="sidebar-list"></div>
+      <div id="sidebars"></div>
       <div id="root-add-button" class="sidebar-component">
         + 새 페이지
       </div>
     `
   }
 
-  protected componentDidUpdate(): void {
-    this.SidebarList.setState({
-      ...this.SidebarList.state,
-      documents: this.state.documents,
+  protected componentDidUpdate() {
+    this.state.documents.map((document) => {
+      const $div = window.document.createElement('div')
+      new SidebarList({
+        parentElement: $div as HTMLElement,
+        initialState: {
+          isParentSpread: true,
+          isSpread: false,
+          document,
+          subDocuments: document.documents,
+          depth: 0,
+        },
+        onAdd: this.onAdd.bind(this),
+        onRemove: this.onRemove.bind(this),
+      })
+      ;(this.element.querySelector('#sidebars') as HTMLElement).appendChild($div)
     })
   }
 

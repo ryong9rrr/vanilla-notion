@@ -13,7 +13,10 @@ export default class ContentPage extends View {
   private Editor: Editor
   constructor({ parentId, onEditing }: Props) {
     super({ parentId })
-    this.Editor = new Editor({ parentId, onEditing })
+    this.Editor = new Editor({
+      parentElement: document.querySelector(`${parentId}`) as HTMLElement,
+      onEditing,
+    })
   }
 
   template(): string {
