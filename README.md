@@ -1,6 +1,6 @@
 # 📔 상윤의 Notion
 
-<img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/09895e43-18fb-46c3-ac8b-b35384935405/vanilla-notion.gif?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221010%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221010T013305Z&X-Amz-Expires=86400&X-Amz-Signature=e794dc58b618bbc8d72098083403c30e13cb488b54f422205acbd6684b427690&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22vanilla-notion.gif%22&x-id=GetObject">
+<img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d0578a2e-8fcb-4055-a399-b5a4bea92421/%E1%84%92%E1%85%AA%E1%84%86%E1%85%A7%E1%86%AB_%E1%84%80%E1%85%B5%E1%84%85%E1%85%A9%E1%86%A8_2022-10-10_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_10.22.37.gif?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221018%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221018T161738Z&X-Amz-Expires=86400&X-Amz-Signature=43d50b83234d047c56bc6221a5ffc353ebfe33d79aab00b3d7027740d109b717&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22%25E1%2584%2592%25E1%2585%25AA%25E1%2584%2586%25E1%2585%25A7%25E1%2586%25AB%2520%25E1%2584%2580%25E1%2585%25B5%25E1%2584%2585%25E1%2585%25A9%25E1%2586%25A8%25202022-10-10%2520%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB%252010.22.37.gif%22&x-id=GetObject">
 
 ## 👋 간단 소개
 
