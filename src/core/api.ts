@@ -1,10 +1,10 @@
-const API_END_POINT = 'https://kdt-frontend.programmers.co.kr'
+const { API_END_POINT } = process.env
 
 export default class Api {
   private API_END_POINT: string
 
   constructor() {
-    this.API_END_POINT = API_END_POINT
+    this.API_END_POINT = API_END_POINT as string
   }
 
   protected async request(url: string, options?: RequestInit) {
